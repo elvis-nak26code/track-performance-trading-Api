@@ -11,7 +11,9 @@
     "seed:markets": "node src/scripts/seedMarkets.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1127.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.11.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -21,7 +23,8 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "multer": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

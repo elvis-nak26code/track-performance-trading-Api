@@ -13,14 +13,34 @@ const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 // implémenté ici (hors périmètre de cette première version du backend).
 const screenshotSchema = new Schema(
   {
-    url: { type: String, required: true },
-    name: { type: String, default: '' },
-    caption: { type: String, default: '' },
+    id: {
+      type: String,
+      required: true,
+    },
+
+    public_id: {
+      type: String,
+      required: true,
+    },
+
+    url: {
+      type: String,
+      required: true,
+    },
+
+    name: {
+      type: String,
+      default: '',
+    },
+
+    caption: {
+      type: String,
+      default: '',
+    },
   },
   { _id: false }
 );
-// On garde tout de même un identifiant stable côté client.
-screenshotSchema.add({ id: { type: String, required: true } });
+
 
 const journalEntrySchema = new Schema(
   {
