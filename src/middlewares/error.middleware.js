@@ -36,6 +36,7 @@ function errorHandler(err, _req, res, _next) {
   res.status(statusCode).json({
     success: false,
     message,
+    ...(err.isOperational && err.code ? { code: err.code } : {}),
     ...(env.isProduction ? {} : { stack: err.stack }),
   });
 }

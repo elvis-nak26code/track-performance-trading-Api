@@ -33,7 +33,17 @@ app.use(compression());
 app.use(morgan(env.isProduction ? 'combined' : 'dev'));
 
 // Parsing du JSON envoyé par le frontend (fetch avec Content-Type: application/json).
-app.use(express.json({ limit: '2mb' }));
+// L'option `verify` conserve aussi le corps BRUT (req.rawBody) : indispensable pour
+// vérifier la signature des webhooks Genius Pay sans le re-lire depuis le stream
+// (déjà consommé par ce middleware).
+app.use(
+  express.json({
+    limit: '2mb',
+    verify(req, _res, buf) {
+      req.rawBody = Buffer.isBuffer(buf) ? buf.toString('utf8') : (buf || '');
+    },
+  })
+);
 
 app.use('/api', apiRouter);
 

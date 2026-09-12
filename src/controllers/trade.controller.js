@@ -54,7 +54,7 @@ const createTradesBulk = asyncHandler(async (req, res) => {
   }
 
   const docs = trades.map((t) => ({ ...pickTradeFields(t), user: req.user._id }));
-  const created = await Trade.insertMany(docs, { ordered: false });
+  const created = await Trade.insertMany(docs, { ordered: true });
   res.status(201).json({ success: true, data: created });
 });
 

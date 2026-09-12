@@ -9,6 +9,7 @@ const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
 const { generateToken } = require('../utils/generateToken');
 const { verifyGoogleCredential } = require('../utils/googleAuth');
+const emailService = require('../services/emailService');
 
 // Crée l'entrée Subscription "essai" initiale et renvoie la réponse
 // d'authentification standard (utilisé par register ET googleLogin).
@@ -57,6 +58,9 @@ const register = asyncHandler(async (req, res) => {
   });
 
   await createTrialSubscription(user);
+
+  // E-mail de bienvenue (no-op si SMTP non configuré, ne bloque pas la réponse).
+  emailService.sendWelcomeEmail(user).catch(() => {});
 
   res.status(201).json(buildAuthResponse(user));
 });
@@ -109,6 +113,8 @@ const googleLogin = asyncHandler(async (req, res) => {
 
   if (isNewUser) {
     await createTrialSubscription(user);
+    // E-mail de bienvenue à la première inscription via Google (no-op sinon).
+    emailService.sendWelcomeEmail(user).catch(() => {});
   }
 
   res.json(buildAuthResponse(user));

@@ -23,7 +23,7 @@ const marketSchema = new Schema(
     },
     category: {
       type: String,
-      enum: ['action', 'indice', 'forex', 'matiere-premiere'],
+      enum: ['action', 'indice', 'forex', 'matiere-premiere', 'crypto', 'synthetique'],
       required: true,
     },
     // Classification comportementale : un actif peut cumuler plusieurs tags.

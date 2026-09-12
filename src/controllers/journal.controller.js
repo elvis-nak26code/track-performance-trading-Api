@@ -53,6 +53,42 @@ function parseJsonField(value, fallback = []) {
   }
 }
 
+// Normalise les blocs texte/image envoyés par le frontend (même s'ils
+// arrivent sous forme de chaîne JSON dans le multipart), puis vérifie que
+// chaque bloc image référence bien une capture existante.
+function buildBlocks(value, screenshotIds) {
+  const parsed = parseJsonField(value, []);
+
+  if (!Array.isArray(parsed)) {
+    throw new ApiError(400, 'Le champ "blocks" doit être un tableau.');
+  }
+
+  const screenshotIdSet = new Set(screenshotIds);
+
+  return parsed.map((block) => {
+    const type = block && block.type === 'image' ? 'image' : 'text';
+
+    if (type === 'image') {
+      const screenshotId = String(block.screenshotId || '');
+      if (!screenshotIdSet.has(screenshotId)) {
+        throw new ApiError(
+          400,
+          "Le bloc image référence une capture d'écran qui n'existe pas dans cette entrée."
+        );
+      }
+      const rawWidth = Number(block.width);
+      const meta = { type: 'image', screenshotId };
+      // Largeur d'affichage choisie par l'auteur (redimensionnement sur la page).
+      if (Number.isFinite(rawWidth) && rawWidth > 0) {
+        meta.width = rawWidth;
+      }
+      return meta;
+    }
+
+    return { type: 'text', content: String(block.content || '') };
+  });
+}
+
 // Upload d'une image vers Cloudinary.
 function uploadImageToCloudinary(file, userId) {
   return new Promise((resolve, reject) => {
@@ -147,9 +183,15 @@ const createJournalEntry = asyncHandler(async (req, res) => {
     });
   }
 
+  const blocks = buildBlocks(
+    req.body.blocks,
+    screenshots.map((s) => s.id)
+  );
+
   const entry = await JournalEntry.create({
     ...pickEntryFields(req.body),
     screenshots,
+    blocks,
     linkedTrades,
     user: req.user._id,
   });
@@ -211,18 +253,6 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
     (screenshot) => !keptIds.includes(screenshot.id)
   );
 
-  // Suppression des anciennes images sur Cloudinary.
-  for (const screenshot of screenshotsToDelete) {
-    if (screenshot.public_id) {
-      await cloudinary.uploader.destroy(
-        screenshot.public_id,
-        {
-          resource_type: 'image',
-        }
-      );
-    }
-  }
-
   // --------------------------------------------------
   // Conservation des anciennes captures
   // --------------------------------------------------
@@ -279,6 +309,14 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
 
   update.screenshots = screenshots;
 
+  // Blocs ordonnés (texte / image) : validés après construction des captures.
+  if (req.body.blocks !== undefined) {
+    update.blocks = buildBlocks(
+      req.body.blocks,
+      screenshots.map((s) => s.id)
+    );
+  }
+
   // --------------------------------------------------
   // Mise à jour MongoDB
   // --------------------------------------------------
@@ -294,6 +332,18 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
       runValidators: true,
     }
   );
+
+  // Suppression des anciennes images sur Cloudinary APRÈS mise à jour DB réussie.
+  for (const screenshot of screenshotsToDelete) {
+    if (screenshot.public_id) {
+      await cloudinary.uploader.destroy(
+        screenshot.public_id,
+        {
+          resource_type: 'image',
+        }
+      );
+    }
+  }
 
   res.json({
     success: true,

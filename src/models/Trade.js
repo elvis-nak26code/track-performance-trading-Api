@@ -44,10 +44,12 @@ const tradeSchema = new Schema(
     entryPrice: {
       type: Number,
       required: true,
+      min: [0, 'Le prix d\'entrée ne peut pas être négatif.'],
     },
     exitPrice: {
       type: Number,
       required: true,
+      min: [0, 'Le prix de sortie ne peut pas être négatif.'],
     },
     quantity: {
       type: Number,

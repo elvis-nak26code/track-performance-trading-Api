@@ -39,4 +39,14 @@ const createMarket = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: market });
 });
 
-module.exports = { getMarkets, createMarket };
+// DELETE /api/markets/:id   (suppression depuis /marches ou le tableau de bord)
+const deleteMarket = asyncHandler(async (req, res) => {
+  const market = await Market.findById(req.params.id);
+  if (!market) {
+    throw new ApiError(404, 'Marché introuvable.');
+  }
+  await Market.findByIdAndDelete(market._id);
+  res.json({ success: true, data: market });
+});
+
+module.exports = { getMarkets, createMarket, deleteMarket };

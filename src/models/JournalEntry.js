@@ -41,6 +41,37 @@ const screenshotSchema = new Schema(
   { _id: false }
 );
 
+// Sous-document : un bloc ordonné de l'entrée de journal. Permet d'alterner
+// texte et images dans l'ordre voulu (le texte concerné suivi de son image).
+// - type "text" : le contenu est dans `content`
+// - type "image" : référence l'id d'une capture du tableau `screenshots`
+const blockSchema = new Schema(
+  {
+    type: {
+      type: String,
+      enum: ['text', 'image'],
+      required: true,
+    },
+
+    content: {
+      type: String,
+      default: '',
+    },
+
+    screenshotId: {
+      type: String,
+      default: '',
+    },
+
+    // Largeur (px) choisie par l'utilisateur lors du redimensionnement de
+    // l'image sur la page. Absente si l'image est en pleine largeur.
+    width: {
+      type: Number,
+    },
+  },
+  { _id: false }
+);
+
 
 const journalEntrySchema = new Schema(
   {
@@ -69,7 +100,14 @@ const journalEntrySchema = new Schema(
     },
     text: {
       type: String,
-      required: [true, "Le texte d'analyse est requis."],
+      default: '',
+    },
+    // Blocs ordonnés (texte / image) permettant d'alterner les sections de
+    // texte avec leurs captures. Anciennes entrées sans `blocks` : on utilise
+    // encore `text` et `screenshots`.
+    blocks: {
+      type: [blockSchema],
+      default: [],
     },
     screenshots: {
       type: [screenshotSchema],

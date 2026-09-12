@@ -18,12 +18,12 @@ const subscriptionSchema = new Schema(
     },
     planId: {
       type: String,
-      enum: ['essai', 'mensuel', 'annuel'],
+      enum: ['essai', 'mensuel', 'annuel', 'lifetime'],
       required: true,
     },
     status: {
       type: String,
-      enum: ['active', 'expired', 'cancelled'],
+      enum: ['pending', 'active', 'expired', 'cancelled'],
       default: 'active',
     },
     startedAt: {
@@ -36,9 +36,10 @@ const subscriptionSchema = new Schema(
     },
     // Réservé à l'intégration Genius Pay : identifiant de la transaction côté
     // fournisseur de paiement, et charge utile brute du webhook pour audit.
+    // "promo" est utilisé pour les abonnements offerts via un code promo.
     provider: {
       type: String,
-      enum: ['none', 'genius_pay'],
+      enum: ['none', 'genius_pay', 'promo'],
       default: 'none',
     },
     providerReference: {

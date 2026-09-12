@@ -24,12 +24,17 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
     "morgan": "^1.10.0",
-    "multer": "^2.3.0"
+    "multer": "^2.3.0",
+    "ngrok": "^5.0.0-beta.2",
+    "nodemailer": "^10.0.9"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "allowScripts": {
+    "ngrok@5.0.0-beta.2": true
   }
 }

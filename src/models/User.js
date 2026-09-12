@@ -54,17 +54,35 @@ const userSchema = new Schema(
       defaultRiskPercent: { type: Number, default: SETTINGS_DEFAULTS.defaultRiskPercent, min: 0 },
     },
 
-    // État d'abonnement courant. Le paiement réel (Genius Pay) sera branché
-    // plus tard ; en attendant, "essai" est attribué par défaut à l'inscription
-    // et peut être changé via /api/subscriptions/choose (mock pour l'instant).
+    // État d'abonnement courant. Le forfait peut être : essai gratuit (7 j),
+    // mensuel (30 j), annuel (365 j) ou "lifetime" (accès à vie accordé via
+    // le code promo). La durée de chaque forfait est définie dans
+    // plan.middleware.js (backend) et constants/plans.js (frontend).
     plan: {
       type: String,
-      enum: ['essai', 'mensuel', 'annuel'],
+      enum: ['essai', 'mensuel', 'annuel', 'lifetime'],
       default: 'essai',
     },
     planStartedAt: {
       type: Date,
       default: Date.now,
+    },
+    // Codes promo déjà utilisés par cet utilisateur (impose "une seule fois
+    // par compte" pour le code qui offre un mois gratuit).
+    promoCodesRedeemed: {
+      type: [
+        {
+          code: { type: String },
+          redeemedAt: { type: Date, default: Date.now },
+        },
+      ],
+      default: [],
+    },
+    // Date du dernier e-mail de rappel d'expiration envoyé (null tant que le
+    // rappel n'a pas été envoyé). Réinitialisé à chaque activation de forfait.
+    expiryReminderSentAt: {
+      type: Date,
+      default: null,
     },
   },
   {

@@ -29,6 +29,53 @@
     "description": "Version micro (1/10e) du contrat Nasdaq 100, mêmes caractéristiques de comportement que le NQ mais avec une taille de contrat plus accessible pour gérer finement le risque."
   },
   {
+    "symbol": "MES1!",
+    "name": "Micro S&P 500 (futures)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Version micro du contrat S&P 500 E-mini (1/10e). Même comportement que l'ES, avec un risque par point plus faible, idéal pour tester des stratégies risk-on en petites tailles."
+  },
+  {
+    "symbol": "YM1!",
+    "name": "Dow Jones (futures)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Futures sur l'indice Dow Jones, pondéré par le prix de ses 30 valeurs. Moins technologique que le Nasdaq, sensible au cycle économique domestique américain et aux grandes valeurs industrielles et financières."
+  },
+  {
+    "symbol": "MYM1!",
+    "name": "Micro Dow Jones (futures)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Version micro (1/10e) du contrat Dow Jones, mêmes caractéristiques comportementales que le YM avec un risque par point réduit."
+  },
+  {
+    "symbol": "RTY1!",
+    "name": "Russell 2000 (futures)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Indice des petites capitalisations américaines. Plus sensible que le S&P 500 aux conditions de crédit domestiques et aux taux d'intérêt US, car ces entreprises dépendent davantage du financement bancaire local que les mega-caps internationales."
+  },
+  {
+    "symbol": "NKD1!",
+    "name": "Nikkei 225 (futures CME)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Futures sur le Nikkei 225, très corrélés à la faiblesse du yen (les exportateurs japonais bénéficient d'une devise faible) et aux décisions de la Banque du Japon."
+  },
+  {
     "symbol": "VIX",
     "name": "Indice de volatilité (CBOE)",
     "category": "indice",
@@ -39,7 +86,35 @@
     "description": "Surnommé « l'indice de la peur », il mesure la volatilité implicite attendue sur le S&P 500. Monte fortement lors des chocs de marché et des événements macro surprises, reste bas en période de calme. Évolue presque toujours à l'inverse des indices actions."
   },
   {
-    "symbol": "DAX",
+    "symbol": "SPX500",
+    "name": "S&P 500 (spot)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Baromètre universel du marché actions américain, très liquide. Reflète rapidement les changements de sentiment de marché (données d'emploi, inflation, politique de la Fed)."
+  },
+  {
+    "symbol": "NAS100",
+    "name": "Nasdaq 100 (spot)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Version spot du Nasdaq 100, très sensible aux résultats des géants technologiques et aux mouvements des taux longs. Amplifie les phases de risk-on."
+  },
+  {
+    "symbol": "US30",
+    "name": "Dow Jones 30 (spot)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Indice composé de 30 grandes valeurs américaines. Comportement globalement risk-on, avec une moindre sensibilité au secteur technologique que le Nasdaq."
+  },
+  {
+    "symbol": "GER40",
     "name": "DAX 40 (Allemagne)",
     "category": "indice",
     "tags": [
@@ -47,6 +122,64 @@
       "sensible-evenements"
     ],
     "description": "Indice phare allemand, très exposé à l'industrie et à l'export. Sensible aux données macro chinoises et américaines (débouchés export), aux prix de l'énergie, et aux décisions de la BCE."
+  },
+  {
+    "symbol": "DAX",
+    "name": "DAX 40 (Allemagne)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Même indice que le GER40, pondéré par les grandes valeurs industrielles et financières allemandes. Réagit fortement aux publications de la BCE et aux données industrielles."
+  },
+  {
+    "symbol": "UK100",
+    "name": "FTSE 100 (Royaume-Uni)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Indice britannique fortement composé de valeurs pétrolières, minières et financières internationales. Sa performance est donc très liée aux prix des matières premières et au dollar plus qu'à l'économie domestique britannique seule."
+  },
+  {
+    "symbol": "FRA40",
+    "name": "CAC 40 (France)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Indice phare français, concentré sur le luxe, l'industrie et la finance. Très sensible à la demande chinoise (luxe) et aux décisions de politique monétaire de la BCE."
+  },
+  {
+    "symbol": "JPN225",
+    "name": "Nikkei 225 (Japon)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Indice japonais très corrélé à la faiblesse du yen (les exportateurs bénéficient d'une devise faible). Réagit fortement aux décisions de la Banque du Japon, historiquement source de surprises de marché."
+  },
+  {
+    "symbol": "HK50",
+    "name": "Hang Seng 50 (Hong Kong)",
+    "category": "indice",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Baromètre des marchés actions chinois et de Hong Kong. Très sensible aux données macro chinoises, aux mesures de relance de Pékin et aux tensions commerciales internationales."
+  },
+  {
+    "symbol": "AUS200",
+    "name": "ASX 200 (Australie)",
+    "category": "indice",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Indice australien dominé par les valeurs financières et minières. Son comportement dépend fortement des prix des matières premières et de la santé de l'économie chinoise."
   },
   {
     "symbol": "AAPL",
@@ -69,6 +202,139 @@
     "description": "Leader des puces IA, l'une des valeurs les plus volatiles du Nasdaq. Extrêmement sensible à ses propres résultats trimestriels, aux annonces de nouveaux produits et aux nouvelles concernant la demande en intelligence artificielle. Peut bouger de plusieurs pourcents en une séance sur une simple rumeur sectorielle."
   },
   {
+    "symbol": "MSFT",
+    "name": "Microsoft Corp.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Mega-cap technologique diversifiée (cloud, logiciels, IA). Réagit à ses résultats trimestriels (en particulier la croissance du cloud Azure) et aux annonces liées à l'intelligence artificielle."
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet (Google)",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Mega-cap tech, dépendante des revenus publicitaires et des investissements dans l'IA. Réagit à ses résultats trimestriels et aux régulations antitrust."
+  },
+  {
+    "symbol": "AMZN",
+    "name": "Amazon.com Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Fortement saisonnier autour des fêtes de fin d'année et du Prime Day (pic de ventes e-commerce). Réagit aussi aux marges du cloud (AWS) publiées en résultats trimestriels."
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Valeur très volatile, sensible aux chiffres de livraisons trimestriels, aux annonces de nouveaux modèles/technologies et aux déclarations publiques de sa direction. Peut se comporter comme une valeur de momentum plus que comme une valeur automobile classique."
+  },
+  {
+    "symbol": "META",
+    "name": "Meta Platforms Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Dépend fortement des revenus publicitaires, eux-mêmes sensibles au cycle économique général. Réagit fortement à ses résultats trimestriels et aux annonces d'investissement dans l'IA/le metaverse."
+  },
+  {
+    "symbol": "NFLX",
+    "name": "Netflix Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Valeur de croissance du streaming, avec une saisonnalité liée aux sorties et aux pics d'abonnements. Sensible à ses résultats trimestriels, à la politique tarifaire et aux annonces de contenus majeurs."
+  },
+  {
+    "symbol": "AMD",
+    "name": "Advanced Micro Devices",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Semi-conducteur très volatil, concurrent direct d'Intel et Nvidia. Réagit fortement aux annonces de produits, aux données du secteur de l'IA et à la conjoncture du cycle des semi-conducteurs."
+  },
+  {
+    "symbol": "JPM",
+    "name": "JPMorgan Chase",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Banque américaine de premier plan, baromètre du secteur financier et des marchés de crédit. Sensible aux décisions de la Fed, à la courbe des taux et aux publications de résultats du secteur bancaire."
+  },
+  {
+    "symbol": "GS",
+    "name": "Goldman Sachs",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Banque d'investissement très exposée aux marchés de capitaux et au trading. Amplifie les phases de risk-on, sensible aux volumes de marché et aux nouvelles émissions."
+  },
+  {
+    "symbol": "V",
+    "name": "Visa Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Géant des paiements, baromètre de la consommation des ménages. Sensible à la vigueur économique et aux volumes de dépenses, réagit aux publications de ventes trimestrielles."
+  },
+  {
+    "symbol": "MA",
+    "name": "Mastercard Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Comme Visa, indicateur de la consommation mondiale via les volumes de paiements. Sensible au cycle économique et aux régulations sur les frais bancaires."
+  },
+  {
+    "symbol": "NKE",
+    "name": "Nike Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Leader de l'équipement sportif, sensible à la demande chinoise et aux cycles de lancement de nouvelles collections. Saisonnalité liée aux périodes de soldes et aux fêtes."
+  },
+  {
+    "symbol": "DIS",
+    "name": "Walt Disney Co.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Conglomérat des médias et du divertissement, très sensible à ses résultats trimestriels (streaming, parcs à thème) et au climat de consommation."
+  },
+  {
     "symbol": "JNJ",
     "name": "Johnson & Johnson",
     "category": "action",
@@ -88,6 +354,15 @@
     "description": "Major pétrolière, sa performance suit de près le prix du baril. Sensible aux tensions géopolitiques au Moyen-Orient, aux décisions de l'OPEP+, et à la saisonnalité de la demande (pic de conduite estival aux US)."
   },
   {
+    "symbol": "BA",
+    "name": "Boeing Co.",
+    "category": "action",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Très sensible aux annonces de commandes/livraisons d'avions, aux incidents de sécurité et aux décisions réglementaires (FAA). Peut connaître de forts mouvements sur une seule actualité."
+  },
+  {
     "symbol": "DAL",
     "name": "Delta Air Lines",
     "category": "action",
@@ -96,6 +371,113 @@
       "sensible-evenements"
     ],
     "description": "Valeur du transport aérien, fortement saisonnière : la demande grimpe en été et lors des fêtes de fin d'année. Très sensible au prix du carburant (pétrole) et aux événements exogènes (météo, crises sanitaires, tensions géopolitiques affectant le trafic)."
+  },
+  {
+    "symbol": "KO",
+    "name": "Coca-Cola Co.",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Valeur défensive classique de consommation de base, avec des revenus stables quel que soit le cycle économique. Dividende régulier, volatilité historiquement faible."
+  },
+  {
+    "symbol": "PG",
+    "name": "Procter & Gamble",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Autre valeur défensive de biens de consommation courante (hygiène, entretien). Recherchée en période d'incertitude pour la stabilité de ses revenus et son dividende."
+  },
+  {
+    "symbol": "WMT",
+    "name": "Walmart Inc.",
+    "category": "action",
+    "tags": [
+      "risk-off",
+      "actif-saisonnier"
+    ],
+    "description": "Distributeur défensif, dont les ventes progressent même en période de ralentissement économique (effet de report vers le discount). Présente aussi une saisonnalité liée aux fêtes de fin d'année."
+  },
+  {
+    "symbol": "MCD",
+    "name": "McDonald's Corp.",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Valeur défensive de la restauration rapide, revenus stables et très peu sensibles au cycle. Dividende régulier, volatilité faible."
+  },
+  {
+    "symbol": "LVMH",
+    "name": "LVMH (Moët Hennessy)",
+    "category": "action",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Géant du luxe, extrêmement sensible à la demande chinoise et aux achats des grands marchés émergents. Comportement saisonnier lié aux festivals de shopping asiatiques et réactions fortes sur toute donnée sur la Chine."
+  },
+  {
+    "symbol": "ASML",
+    "name": "ASML Holding",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Pilier de l'industrie des semi-conducteurs, position quasi monopolistique sur la lithographie. Réagit aux cycles d'investissement des fondeurs et à toute restriction d'export."
+  },
+  {
+    "symbol": "SAP",
+    "name": "SAP SE",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Leader européen des logiciels d'entreprise, sensibilité modérée au cycle économique mais réactions marquées aux résultats et à la transition vers le cloud."
+  },
+  {
+    "symbol": "TTE",
+    "name": "TotalEnergies",
+    "category": "action",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Major européenne du pétrole et du gaz, corrélée au prix du baril et du gaz. Sensible aux tensions géopolitiques, aux décisions OPEP+ et à la saisonnalité de la demande énergétique."
+  },
+  {
+    "symbol": "BNP",
+    "name": "BNP Paribas",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Première banque de la zone euro, très exposée aux conditions de taux de la BCE et à la santé du crédit européen. Amplifie les mouvements risk-on du secteur financier."
+  },
+  {
+    "symbol": "SIE",
+    "name": "Siemens AG",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Conglomérat industriel allemand, fortement exposé à l'industrie et à la transition énergétique. Sensible à la conjoncture industrielle mondiale et aux programmes d'investissement."
+  },
+  {
+    "symbol": "BMW",
+    "name": "BMW AG",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "actif-saisonnier"
+    ],
+    "description": "Constructeur automobile allemand, sensible au climat de consommation et aux investissements dans l'électrique. Comportement saisonnier autour des salons et des pics de vente."
   },
   {
     "symbol": "EURUSD",
@@ -135,201 +517,6 @@
     "description": "Devise dite « commodity currency », très corrélée aux prix des matières premières (fer, charbon) et à la santé économique de la Chine, principal partenaire commercial de l'Australie. Monte typiquement en période de risk-on et d'optimisme sur la croissance mondiale."
   },
   {
-    "symbol": "USDCHF",
-    "name": "Dollar américain / Franc suisse",
-    "category": "forex",
-    "tags": [
-      "risk-off"
-    ],
-    "description": "Le franc suisse est une valeur refuge historique. En période de stress sur les marchés ou de crise géopolitique, le franc a tendance à s'apprécier fortement, faisant baisser la paire USD/CHF."
-  },
-  {
-    "symbol": "XAUUSD",
-    "name": "Or (Gold)",
-    "category": "matiere-premiere",
-    "tags": [
-      "risk-off",
-      "actif-saisonnier"
-    ],
-    "description": "Valeur refuge par excellence, recherchée en période d'incertitude géopolitique ou économique et lors des anticipations de baisse des taux réels. Présente une saisonnalité connue liée aux achats de bijouterie en Inde (période des mariages, automne) et en Chine (Nouvel An lunaire)."
-  },
-  {
-    "symbol": "XAGUSD",
-    "name": "Argent (Silver)",
-    "category": "matiere-premiere",
-    "tags": [
-      "risk-off",
-      "sensible-evenements"
-    ],
-    "description": "Souvent comparé à l'or comme valeur refuge, mais avec une composante industrielle plus marquée (électronique, panneaux solaires), ce qui le rend plus volatil et parfois plus sensible aux données de croissance industrielle."
-  },
-  {
-    "symbol": "WTI",
-    "name": "Pétrole brut WTI",
-    "category": "matiere-premiere",
-    "tags": [
-      "sensible-evenements",
-      "actif-saisonnier"
-    ],
-    "description": "Très réactif aux tensions géopolitiques (Moyen-Orient, sanctions), aux décisions de production de l'OPEP+, et aux stocks hebdomadaires américains (rapport EIA). Présente une saisonnalité liée à la demande estivale (« driving season ») et aux besoins de chauffage en hiver."
-  },
-  {
-    "symbol": "NATGAS",
-    "name": "Gaz naturel",
-    "category": "matiere-premiere",
-    "tags": [
-      "actif-saisonnier",
-      "sensible-evenements"
-    ],
-    "description": "Extrêmement saisonnier : la demande explose en hiver (chauffage) et lors des vagues de chaleur estivales (climatisation). Très sensible aux prévisions météo à court terme et aux niveaux de stockage, ce qui en fait l'une des matières premières les plus volatiles."
-  },
-  {
-    "symbol": "WHEAT",
-    "name": "Blé",
-    "category": "matiere-premiere",
-    "tags": [
-      "actif-saisonnier",
-      "sensible-evenements"
-    ],
-    "description": "Matière première agricole dont le prix suit le cycle des récoltes (semis, croissance, moisson) et les conditions météo dans les grandes régions productrices (Mer Noire, Amérique du Nord). Très sensible aux conflits touchant les zones d'export majeures."
-  },
-  {
-    "symbol": "CORN",
-    "name": "Maïs",
-    "category": "matiere-premiere",
-    "tags": [
-      "actif-saisonnier"
-    ],
-    "description": "Comme le blé, fortement saisonnier avec un cycle agricole annuel bien défini (semis au printemps, récolte à l'automne aux US). Les rapports USDA sur les surfaces plantées et les rendements provoquent souvent des mouvements marqués."
-  },
-  {
-    "symbol": "RTY1!",
-    "name": "Russell 2000 (futures)",
-    "category": "indice",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Indice des petites capitalisations américaines. Plus sensible que le S&P 500 aux conditions de crédit domestiques et aux taux d'intérêt US, car ces entreprises dépendent davantage du financement bancaire local que les mega-caps internationales."
-  },
-  {
-    "symbol": "FTSE",
-    "name": "FTSE 100 (Royaume-Uni)",
-    "category": "indice",
-    "tags": [
-      "risk-on"
-    ],
-    "description": "Indice britannique fortement composé de valeurs pétrolières, minières et financières internationales. Sa performance est donc très liée aux prix des matières premières et au dollar plus qu'à l'économie domestique britannique seule."
-  },
-  {
-    "symbol": "CAC40",
-    "name": "CAC 40 (France)",
-    "category": "indice",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Indice phare français, concentré sur le luxe, l'industrie et la finance. Très sensible à la demande chinoise (luxe) et aux décisions de politique monétaire de la BCE."
-  },
-  {
-    "symbol": "NIKKEI",
-    "name": "Nikkei 225 (Japon)",
-    "category": "indice",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Indice japonais très corrélé à la faiblesse du yen (les exportateurs bénéficient d'une devise faible). Réagit fortement aux décisions de la Banque du Japon, historiquement source de surprises de marché."
-  },
-  {
-    "symbol": "HSI",
-    "name": "Hang Seng (Hong Kong)",
-    "category": "indice",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Baromètre des marchés actions chinois et de Hong Kong. Très sensible aux données macro chinoises, aux mesures de relance de Pékin et aux tensions commerciales internationales."
-  },
-  {
-    "symbol": "MSFT",
-    "name": "Microsoft Corp.",
-    "category": "action",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Mega-cap technologique diversifiée (cloud, logiciels, IA). Réagit à ses résultats trimestriels (en particulier la croissance du cloud Azure) et aux annonces liées à l'intelligence artificielle."
-  },
-  {
-    "symbol": "AMZN",
-    "name": "Amazon.com Inc.",
-    "category": "action",
-    "tags": [
-      "risk-on",
-      "actif-saisonnier",
-      "sensible-evenements"
-    ],
-    "description": "Fortement saisonnier autour des fêtes de fin d'année et du Prime Day (pic de ventes e-commerce). Réagit aussi aux marges du cloud (AWS) publiées en résultats trimestriels."
-  },
-  {
-    "symbol": "TSLA",
-    "name": "Tesla Inc.",
-    "category": "action",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Valeur très volatile, sensible aux chiffres de livraisons trimestriels, aux annonces de nouveaux modèles/technologies et aux déclarations publiques de sa direction. Peut se comporter comme une valeur de momentum plus que comme une valeur automobile classique."
-  },
-  {
-    "symbol": "META",
-    "name": "Meta Platforms Inc.",
-    "category": "action",
-    "tags": [
-      "risk-on",
-      "sensible-evenements"
-    ],
-    "description": "Dépend fortement des revenus publicitaires, eux-mêmes sensibles au cycle économique général. Réagit fortement à ses résultats trimestriels et aux annonces d'investissement dans l'IA/le metaverse."
-  },
-  {
-    "symbol": "KO",
-    "name": "Coca-Cola Co.",
-    "category": "action",
-    "tags": [
-      "risk-off"
-    ],
-    "description": "Valeur défensive classique de consommation de base, avec des revenus stables quel que soit le cycle économique. Dividende régulier, volatilité historiquement faible."
-  },
-  {
-    "symbol": "PG",
-    "name": "Procter & Gamble",
-    "category": "action",
-    "tags": [
-      "risk-off"
-    ],
-    "description": "Autre valeur défensive de biens de consommation courante (hygiène, entretien). Recherchée en période d'incertitude pour la stabilité de ses revenus et son dividende."
-  },
-  {
-    "symbol": "WMT",
-    "name": "Walmart Inc.",
-    "category": "action",
-    "tags": [
-      "risk-off",
-      "actif-saisonnier"
-    ],
-    "description": "Distributeur défensif, dont les ventes progressent même en période de ralentissement économique (effet de report vers le discount). Présente aussi une saisonnalité liée aux fêtes de fin d'année."
-  },
-  {
-    "symbol": "BA",
-    "name": "Boeing Co.",
-    "category": "action",
-    "tags": [
-      "sensible-evenements"
-    ],
-    "description": "Très sensible aux annonces de commandes/livraisons d'avions, aux incidents de sécurité et aux décisions réglementaires (FAA). Peut connaître de forts mouvements sur une seule actualité."
-  },
-  {
     "symbol": "NZDUSD",
     "name": "Dollar néo-zélandais / Dollar américain",
     "category": "forex",
@@ -337,6 +524,15 @@
       "risk-on"
     ],
     "description": "Comme l'AUD, une devise « commodity currency » sensible aux prix agricoles et laitiers ainsi qu'à la demande chinoise. Tend à monter en période d'appétit pour le risque."
+  },
+  {
+    "symbol": "USDCHF",
+    "name": "Dollar américain / Franc suisse",
+    "category": "forex",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Le franc suisse est une valeur refuge historique. En période de stress sur les marchés ou de crise géopolitique, le franc a tendance à s'apprécier fortement, faisant baisser la paire USD/CHF."
   },
   {
     "symbol": "USDCAD",
@@ -367,6 +563,141 @@
     "description": "Paire souvent utilisée comme baromètre du sentiment de risque en Europe, car elle combine une devise de financement (yen) avec l'euro. Peut bouger fortement lors de dénouements de carry trade."
   },
   {
+    "symbol": "EURCHF",
+    "name": "Euro / Franc suisse",
+    "category": "forex",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Paire dominée par le comportement du franc suisse, valeur refuge. Tendance à baisser en période de stress, largement utilisée dans le passé comme indicateur de tension sur les marchés européens."
+  },
+  {
+    "symbol": "GBPJPY",
+    "name": "Livre sterling / Yen japonais",
+    "category": "forex",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Paire à forte volatilité, très sensible au sentiment de risque : monte rapidement en phase de risk-on (carry trade) et chute violemment lors des retraits de risque."
+  },
+  {
+    "symbol": "AUDJPY",
+    "name": "Dollar australien / Yen japonais",
+    "category": "forex",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Une des paires les plus représentatives du sentiment de risque mondial. Étroitement corrélée aux marchés actions et aux matières premières en phases de risk-on."
+  },
+  {
+    "symbol": "USDSGD",
+    "name": "Dollar américain / Dollar singapourien",
+    "category": "forex",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Le dollar singapourien est considéré comme une devise relativement stable et sûre en Asie, performant modérément en phase de risque-off."
+  },
+  {
+    "symbol": "USDCNH",
+    "name": "Dollar américain / Yuan offshore",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Le yuan réagit fortement aux indicateurs économiques chinois, aux tensions commerciales et aux interventions de la banque centrale chinoise sur la parité."
+  },
+  {
+    "symbol": "USDMXN",
+    "name": "Dollar américain / Peso mexicain",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise émergente très sensible aux matières premières, aux écarts de taux et à la politique monétaire mexicaine. Volatilité haute lors des élections et des chocs de marché."
+  },
+  {
+    "symbol": "XAUUSD",
+    "name": "Or (Gold)",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-off",
+      "actif-saisonnier"
+    ],
+    "description": "Valeur refuge par excellence, recherchée en période d'incertitude géopolitique ou économique et lors des anticipations de baisse des taux réels. Présente une saisonnalité connue liée aux achats de bijouterie en Inde (période des mariages, automne) et en Chine (Nouvel An lunaire)."
+  },
+  {
+    "symbol": "GOLD",
+    "name": "Or (Gold)",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-off",
+      "actif-saisonnier"
+    ],
+    "description": "Même comportement que XAUUSD : refuge historique, sensible aux taux réels, au dollar et à l'inflation, avec une saisonnalité liée aux achats physiques en Asie."
+  },
+  {
+    "symbol": "XAGUSD",
+    "name": "Argent (Silver)",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-off",
+      "sensible-evenements"
+    ],
+    "description": "Souvent comparé à l'or comme valeur refuge, mais avec une composante industrielle plus marquée (électronique, panneaux solaires), ce qui le rend plus volatil et parfois plus sensible aux données de croissance industrielle."
+  },
+  {
+    "symbol": "XPTUSD",
+    "name": "Platine",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-off",
+      "sensible-evenements"
+    ],
+    "description": "Métal précieux à usage mixte (joaillerie et industrie automobile via les pots catalytiques). Moins liquide que l'or, avec des mouvements parfois amplifiés par des nouvelles sur l'industrie automobile."
+  },
+  {
+    "symbol": "WTI",
+    "name": "Pétrole brut WTI",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Très réactif aux tensions géopolitiques (Moyen-Orient, sanctions), aux décisions de production de l'OPEP+, et aux stocks hebdomadaires américains (rapport EIA). Présente une saisonnalité liée à la demande estivale (« driving season ») et aux besoins de chauffage en hiver."
+  },
+  {
+    "symbol": "USOIL",
+    "name": "Pétrole brut WTI",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Même comportement que le WTI : corrélé aux tensions géopolitiques, aux décisions OPEP+ et à la saisonnalité de la demande de carburant."
+  },
+  {
+    "symbol": "BRENT",
+    "name": "Pétrole brut Brent",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Brent de mer du Nord, référence internationale du pétrole. Sensible aux tensions au Moyen-Orient, à la Russie et à la demande mondiale, avec une saisonnalité marquée."
+  },
+  {
+    "symbol": "NATGAS",
+    "name": "Gaz naturel",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Extrêmement saisonnier : la demande explose en hiver (chauffage) et lors des vagues de chaleur estivales (climatisation). Très sensible aux prévisions météo à court terme et aux niveaux de stockage, ce qui en fait l'une des matières premières les plus volatiles."
+  },
+  {
     "symbol": "COPPER",
     "name": "Cuivre",
     "category": "matiere-premiere",
@@ -377,14 +708,23 @@
     "description": "Surnommé « Dr Copper » car son prix est considéré comme un indicateur avancé de la santé économique mondiale (utilisé dans la construction et l'industrie). Très sensible aux données chinoises."
   },
   {
-    "symbol": "PLATINUM",
-    "name": "Platine",
+    "symbol": "WHEAT",
+    "name": "Blé",
     "category": "matiere-premiere",
     "tags": [
-      "risk-off",
+      "actif-saisonnier",
       "sensible-evenements"
     ],
-    "description": "Métal précieux à usage mixte (joaillerie et industrie automobile via les pots catalytiques). Moins liquide que l'or, avec des mouvements parfois amplifiés par des nouvelles sur l'industrie automobile."
+    "description": "Matière première agricole dont le prix suit le cycle des récoltes (semis, croissance, moisson) et les conditions météo dans les grandes régions productrices (Mer Noire, Amérique du Nord). Très sensible aux conflits touchant les zones d'export majeures."
+  },
+  {
+    "symbol": "CORN",
+    "name": "Maïs",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier"
+    ],
+    "description": "Comme le blé, fortement saisonnier avec un cycle agricole annuel bien défini (semis au printemps, récolte à l'automne aux US). Les rapports USDA sur les surfaces plantées et les rendements provoquent souvent des mouvements marqués."
   },
   {
     "symbol": "SOYBEAN",
@@ -424,5 +764,167 @@
       "actif-saisonnier"
     ],
     "description": "Matière première agricole textile avec un cycle de récolte annuel. Sensible à la demande de l'industrie textile mondiale et aux conditions météo dans les grandes régions productrices (US, Inde, Chine)."
+  },
+  {
+    "symbol": "COFFEE",
+    "name": "Café",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Marché agricole très dépendant des récoltes au Brésil et au Vietnam. Sensible aux conditions météo et aux décisions des grands producteurs, avec une volatilité saisonnière marquée autour des cycles de récolte."
+  },
+  {
+    "symbol": "BTCUSD",
+    "name": "Bitcoin",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Actif numérique le plus liquide, hautement volatil. Réagit fortement à la politique monétaire américaine (liquidity), aux annonces réglementaires et aux flux institutionnels. Amplifie fortement les phases de risk-on."
+  },
+  {
+    "symbol": "ETHUSD",
+    "name": "Ethereum",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Deuxième capitalisation crypto, très corrélée à Bitcoin avec une volatilité plus élevée. Sensible aux évolutions de la finance décentralisée et aux mises à jour du réseau."
+  },
+  {
+    "symbol": "XRPUSD",
+    "name": "Ripple / XRP",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Crypto dédiée aux paiements transfrontaliers. Réagit fortement à l'actualité réglementaire (dossiers juridiques avec les autorités américaines) et aux partenariats bancaires."
+  },
+  {
+    "symbol": "SOLUSD",
+    "name": "Solana",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Blockchain rapide et peu coûteuse, très prisée de la finance décentralisée et des NFT. Volatilité élevée, sensible aux cycles d'activité on-chain et aux incidents de réseau."
+  },
+  {
+    "symbol": "ADAUSD",
+    "name": "Cardano",
+    "category": "crypto",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Crypto de type « proof of stake » avec un développement académique. Se comporte comme un actif à bêta élevé, amplifiant les tendances risk-on du marché crypto."
+  },
+  {
+    "symbol": "DOGEUSD",
+    "name": "Dogecoin",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Crypto spéculative à très haute volatilité, fortement sensible aux mentions publiques et à l'activité des communautés. Comportement de momentum, réactions amplifiées aux nouvelles événementielles."
+  },
+  {
+    "symbol": "BNBUSD",
+    "name": "BNB",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Jeton de la plateforme Binance, sensible à l'activité des échanges crypto et aux annonces réglementaires concernant les plateformes."
+  },
+  {
+    "symbol": "LTCUSD",
+    "name": "Litecoin",
+    "category": "crypto",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Crypto « argent numérique », historiquement corrélée à Bitcoin avec des mouvements souvent amplifiés. Comportement globalement risk-on."
+  },
+  {
+    "symbol": "AVAXUSD",
+    "name": "Avalanche",
+    "category": "crypto",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Plateforme de contrats intelligents rapide et évolutive. Volatilité élevée, sensible à l'adoption de l'écosystème et au sentiment général sur les altcoins."
+  },
+  {
+    "symbol": "DOTUSD",
+    "name": "Polkadot",
+    "category": "crypto",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Protocole d'interopérabilité entre blockchains. Se comporte comme un altcoin à bêta élevé, sensible au développement de l'écosystème."
+  },
+  {
+    "symbol": "Volatility 75 Index",
+    "name": "Indice synthétique Volatility 75",
+    "category": "synthetique",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Indice synthétique (Deriv) simulant un actif volatil, sans influence du marché réel. Monte et descend avec une volatilité relative élevée, idéal pour étudier sa propre discipline en conditions agitées."
+  },
+  {
+    "symbol": "Volatility 100 Index",
+    "name": "Indice synthétique Volatility 100",
+    "category": "synthetique",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Version plus volatile (100) de la gamme Volatility. Amplitude des mouvements accrue, parfaite pour stresser les stratégies et la gestion du risque."
+  },
+  {
+    "symbol": "Boom 1000 Index",
+    "name": "Indice synthétique Boom 1000",
+    "category": "synthetique",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Indice synthétique avec tendance générale haussière : dans une fenêtre temporelle donnée, le prix finit plus haut qu'il ne démarre. Convient aux stratégies long biaisées."
+  },
+  {
+    "symbol": "Crash 1000 Index",
+    "name": "Indice synthétique Crash 1000",
+    "category": "synthetique",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Indice synthétique avec tendance générale baissière : le prix finit plus bas qu'il ne démarre dans la fenêtre temporelle. Convient aux stratégies short biaisées ou défensives."
+  },
+  {
+    "symbol": "Step Index",
+    "name": "Indice synthétique Step",
+    "category": "synthetique",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Indice synthétique dont le prix évolue par paliers réguliers et dans une marge faible. Comportement très stable et prévisible, utile pour des stratégies de scalping à petite amplitude."
+  },
+  {
+    "symbol": "Jump 100 Index",
+    "name": "Indice synthétique Jump 100",
+    "category": "synthetique",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Indice synthétique alternant phases plates et sauts de prix brusques. Volatilité par à-coups, sensible aux instants d'expansion même sans actualité extérieure."
   }
 ]
