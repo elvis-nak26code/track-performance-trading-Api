@@ -13,19 +13,29 @@ const { runExpiryReminders } = require('./jobs/expiryReminder');
 const EXPIRY_REMINDER_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 // Pré-remplit la collection "markets" avec le catalogue de référence au
-// démarrage, uniquement si elle est vide (la page /marches est alors
-// utilisable sans passer par le script manuel seed:markets).
+// démarrage. Compatible avec une collection déjà peuplée : seuls les
+// actifs prédéfinis manquants sont ajoutés (fusion par symbole), les
+// ajouts manuels des utilisateurs (isCustom: true) sont préservés. La page
+// /marches est ainsi toujours utilisable sans passer par seed:markets.
 async function seedMarketsIfEmpty() {
   const count = await Market.estimatedDocumentCount();
-  if (count > 0) {
-    console.log(`[seed:markets] ${count} marché(s) déjà présent(s), pré-remplissage ignoré.`);
+  const existingSymbols = new Set(
+    (await Market.find({}, { symbol: 1 })).map((m) => m.symbol.toUpperCase())
+  );
+
+  const missing = marketsSeed.filter(
+    (market) => !existingSymbols.has(market.symbol.toUpperCase())
+  );
+
+  if (missing.length === 0) {
+    console.log(`[seed:markets] ${count} marché(s) déjà présents, catalogue à jour.`);
     return;
   }
 
-  await Market.insertMany(
-    marketsSeed.map((market) => ({ ...market, isCustom: false }))
+  await Market.insertMany(missing.map((market) => ({ ...market, isCustom: false })));
+  console.log(
+    `[seed:markets] ${count} marché(s) présent(s), ${missing.length} nouveau(x) actif(s) de référence ajouté(s).`
   );
-  console.log(`[seed:markets] ${marketsSeed.length} marché(s) de référence créé(s) au démarrage.`);
 }
 
 async function start() {

@@ -926,5 +926,719 @@
       "sensible-evenements"
     ],
     "description": "Indice synthétique alternant phases plates et sauts de prix brusques. Volatilité par à-coups, sensible aux instants d'expansion même sans actualité extérieure."
+  },
+  {
+    "symbol": "EURAUD",
+    "name": "Euro / Dollar australien",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Croisement euro/dollar australien. S'oppose souvent à la solidité des matières premières (AUD) et aux écarts de taux Europe/Australie ; monte quand le sentiment sur la zone euro l'emporte sur la santé des matières premières."
+  },
+  {
+    "symbol": "EURCAD",
+    "name": "Euro / Dollar canadien",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Combiné entre l'euro et une devise liée au pétrole (CAD). Très sensible aux prix de l’énergie et aux écarts de politique monétaire BCE/Banque du Canada."
+  },
+  {
+    "symbol": "EURNZD",
+    "name": "Euro / Dollar néo-zélandais",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Croisement moins liquide, sensible aux données européennes et aux prix laitiers/agricoles qui soutiennent le dollar néo-zélandais."
+  },
+  {
+    "symbol": "GBPCAD",
+    "name": "Livre sterling / Dollar canadien",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Volatilité accentuée par les nouvelles politiques britanniques et les prix du pétrole. Réagit aux décisions de la Banque d'Angleterre et de la Banque du Canada."
+  },
+  {
+    "symbol": "GBPAUD",
+    "name": "Livre sterling / Dollar australien",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Croisement relativement volatil entre une devise européenne et une commodity currency, sensible aux données macro des deux pays."
+  },
+  {
+    "symbol": "GBPNZD",
+    "name": "Livre sterling / Dollar néo-zélandais",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Croisement à faible liquidité avec des mouvements brusques autour des publications macro britanniques et néo-zélandaises."
+  },
+  {
+    "symbol": "EURSEK",
+    "name": "Euro / Couronne suédoise",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "La couronne suédoise est une devise étroitement gérée par sa banque centrale : la paire réagit fortement aux interventions commentées de la Riksbank et aux données d'inflation suédoises."
+  },
+  {
+    "symbol": "EURNOK",
+    "name": "Euro / Couronne norvégienne",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "La couronne norvégienne est très dépendante des prix du pétrole (exportateur majeur de gaz/pétrole). Saisonnalité liée à la demande énergétique en hiver et aux décisions de la Norges Bank."
+  },
+  {
+    "symbol": "USDSEK",
+    "name": "Dollar américain / Couronne suédoise",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Sensible aux écarts de taux entre la Fed et la Riksbank ainsi qu'au sentiment global de risque : la couronne s'affaiblit en période de stress alors que le dollar se renforce."
+  },
+  {
+    "symbol": "USDNOK",
+    "name": "Dollar américain / Couronne norvégienne",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Mouvements largement dictés par le prix du pétrole et les perspectives de demande énergétique ; en cas de chute du brut, la couronne norvégienne perd rapidement du terrain face au dollar."
+  },
+  {
+    "symbol": "USDPLN",
+    "name": "Dollar américain / Zloty polonais",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise d'Europe centrale sensible à la proximité du conflit ukrainien, aux tensions énergétiques et aux décisions de la banque centrale polonaise."
+  },
+  {
+    "symbol": "USDHUF",
+    "name": "Dollar américain / Forint hongrois",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise d'Europe centrale dépendante du prix de l'énergie et du sentiment de risque régional, avec une volatilité souvent élevée lors des tensions géopolitiques."
+  },
+  {
+    "symbol": "USDTRY",
+    "name": "Dollar américain / Livre turque",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise émergente à inflation élevée : tendance structurelle baissière de la livre turque, entrecoupée d'interventions et de mesures de politique monétaire locales. Volatilité très forte, à manier avec prudence."
+  },
+  {
+    "symbol": "USDZAR",
+    "name": "Dollar américain / Rand sud-africain",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise émergente très liée aux prix de l'or et des métaux (l'Afrique du Sud est un grand exportateur minier). Se comporte comme une devise risquée, amplifiant les phases de risk-off."
+  },
+  {
+    "symbol": "USDBRL",
+    "name": "Dollar américain / Réal brésilien",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise émergente corrélée aux matières premières agricoles et au minerai de fer (Brésil est un grand exportateur). Sensible aux tensions politiques locales et au sentiment global sur les marchés émergents."
+  },
+  {
+    "symbol": "USDINR",
+    "name": "Dollar américain / Roupie indienne",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise d'un grand importateur d'énergie : sensible aux prix du pétrole et aux flux d'investissement étranger en Inde. La banque centrale indienne intervient régulièrement pour lisser sa volatilité."
+  },
+  {
+    "symbol": "USDPHP",
+    "name": "Dollar américain / Peso philippin",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise asiatique sensible au prix de l'énergie (importateur) et aux flux de rapatriement des travailleurs philippins à l'étranger, qui la soutiennent en période de croissance mondiale."
+  },
+  {
+    "symbol": "USDIDR",
+    "name": "Dollar américain / Roupie indonésienne",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise d'un exportateur de charbon, huile de palme et nickel. Sensible à la Chine (principal client) et aux prix des matières premières indonésiennes."
+  },
+  {
+    "symbol": "USDKRW",
+    "name": "Dollar américain / Won coréen",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Reflet de l'économie exportatrice sud-coréenne (semi-conducteurs, automobiles) et très exposée à la conjoncture chinoise. Se renforce en phase de risk-on mondial, s'affaiblit vite en cas de choc."
+  },
+  {
+    "symbol": "USDTHB",
+    "name": "Dollar américain / Baht thaïlandais",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Devise asiatique très dépendante du tourisme et des flux de capitaux. Sensible aux variations du sentiment de risque régional et aux données touristiques."
+  },
+  {
+    "symbol": "AUDCHF",
+    "name": "Dollar australien / Franc suisse",
+    "category": "forex",
+    "tags": [
+      "risk-on",
+      "risk-off"
+    ],
+    "description": "Croisement très représentatif du sentiment de risque : il combine une devise risquée (AUD) et une valeur refuge (CHF). Monte fortement en risk-on, chute violemment en périodes de stress."
+  },
+  {
+    "symbol": "NZDCHF",
+    "name": "Dollar néo-zélandais / Franc suisse",
+    "category": "forex",
+    "tags": [
+      "risk-on",
+      "risk-off"
+    ],
+    "description": "Même logique que AUD/CHF : baromètre du risque combinant une commodity currency et une valeur refuge. Sa volatilité diminue lors des retraits de risque."
+  },
+  {
+    "symbol": "CADCHF",
+    "name": "Dollar canadien / Franc suisse",
+    "category": "forex",
+    "tags": [
+      "risk-on",
+      "risk-off"
+    ],
+    "description": "Oppose une devise liée au pétrole à une valeur refuge. Sensible à la fois au prix du brut et au sentiment général de risque."
+  },
+  {
+    "symbol": "CADJPY",
+    "name": "Dollar canadien / Yen japonais",
+    "category": "forex",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Pair souvent utilisé pour exprimer une opinion sur le pétrole et le carry trade : monte quand le brut grimpe et que le risque est favorable, chute lors des dénouements de positions à risque."
+  },
+  {
+    "symbol": "CHFJPY",
+    "name": "Franc suisse / Yen japonais",
+    "category": "forex",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Croisement entre deux valeurs refuges (CHF et JPY). Historiquement sensible aux regroupements de capital en période de stress, peu de drivers propres en dehors des politiques des banques centrales."
+  },
+  {
+    "symbol": "AUDNZD",
+    "name": "Dollar australien / Dollar néo-zélandais",
+    "category": "forex",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Croisement régional d'Océanie, relativement peu volatile, réagissant aux données locales (emploi, inflation) et aux prix laitiers australiens et néo-zélandais."
+  },
+  {
+    "symbol": "PALLADIUM",
+    "name": "Palladium",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Métal précieux concentré sur l'industrie automobile (pots catalytiques des moteurs essence). Très réactif aux normes antipollution et aux cycles de production automobile, plus volatil que l'or."
+  },
+  {
+    "symbol": "PLATINUM",
+    "name": "Platine",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Métal précieux à dominante industrielle (pots catalytiques diesel, joaillerie). Peut être une valeur refuge modérée, avec une volatilité liée au secteur automobile et aux mines d'Afrique du Sud."
+  },
+  {
+    "symbol": "NICKEL",
+    "name": "Nickel (LME)",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Métal de base essentiel aux batteries électriques et à l'acier inoxydable. Très sensible à la demande chinoise et aux politiques de l'Indonésie, premier producteur mondial. Volatilité historiquement forte."
+  },
+  {
+    "symbol": "ALUMINIUM",
+    "name": "Aluminium (LME)",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Métal de base utilisé dans la construction, les transports et l'emballage. Sensible à la conjoncture industrielle chinoise et aux coûts de l'énergie, très énergivore à produire."
+  },
+  {
+    "symbol": "ZINC",
+    "name": "Zinc (LME)",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-on"
+    ],
+    "description": "Métal de base galvanisé utilisé dans la construction et l'automobile. Très corrélé au cycle économique mondial et à la demande chinoise."
+  },
+  {
+    "symbol": "IRONORE",
+    "name": "Minerai de fer",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Matière première clé de la sidérurgie, dominée par les exportations australiennes et brésiliennes vers la Chine. Réagit fortement à la politique de construction chinoise et aux stocks des ports."
+  },
+  {
+    "symbol": "LITHIUM",
+    "name": "Lithium",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Métal des batteries, moteur de la transition énergétique. Sensible aux annonces de capacité de production, à la demande de véhicules électriques et aux cycles de sur/sous-investissement des mineurs."
+  },
+  {
+    "symbol": "LNG",
+    "name": "Gaz naturel liquéfié (LNG)",
+    "category": "matiere-premiere",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Gaz expédié par navires, marché mondialisé et très sensible aux flux énergétiques européens et asiatiques. Saisonnalité hivernale marquée et réactions fortes aux tensions sur les approvisionnements."
+  },
+  {
+    "symbol": "RBOB",
+    "name": "Essence RBOB",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Contrat américain sur l'essence : forte saisonnalité liée à la « driving season » (pics de consommation estivale). Sensible aux raffineries, aux stocks hebdomadaires et aux prix du brut."
+  },
+  {
+    "symbol": "HEATINGOIL",
+    "name": "Fioul de chauffage",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Distillé utilisé pour le chauffage, avec une demande qui culmine en hiver. Réagit aux stocks et aux risques d'approvisionnement en produits raffinés."
+  },
+  {
+    "symbol": "ETHANOL",
+    "name": "Éthanol",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Biocarburant produit à partir du maïs (US) : lié aux rapports météo, aux surfaces plantées et à la demande de carburants saisonnière. Ses mouvements accompagnent souvent ceux du maïs."
+  },
+  {
+    "symbol": "RICE",
+    "name": "Riz",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Céréale de base majeure en Asie, avec une production concentrée en Inde et en Thaïlande. Sensible à la mousson, aux restrictions d'exportation des grands producteurs et à la demande chinoise."
+  },
+  {
+    "symbol": "OATS",
+    "name": "Avoine",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier"
+    ],
+    "description": "Céréale avec un cycle de culture annuel marqué, sensible aux conditions météo dans les grandes régions productrices du Canada et des États-Unis."
+  },
+  {
+    "symbol": "LEANHOGS",
+    "name": "Porc maigre (Lean Hogs)",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Matière première animale (élevage porcin) : très saisonnière, sensible aux coûts d'alimentation (maïs/soja), aux épisodes de maladie animale et aux cycles de production des élevages."
+  },
+  {
+    "symbol": "LIVECATTLE",
+    "name": "Bovins vivants",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Élevage bovin avec des cycles longs de production : la réponse de l'offre aux prix est lente, ce qui crée des mouvements durables sur plusieurs mois. Sensible aux coûts d'alimentation et à la météo."
+  },
+  {
+    "symbol": "HOGS",
+    "name": "Porcs",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier"
+    ],
+    "description": "Élevage porcin à cycles relativement courts, avec une saisonnalité liée aux périodes de consommation (grillades estivales, fêtes). Les coûts du maïs et du soja pèsent sur la rentabilité des élevages."
+  },
+  {
+    "symbol": "LUMBER",
+    "name": "Bois de construction",
+    "category": "matiere-premiere",
+    "tags": [
+      "risk-on",
+      "actif-saisonnier"
+    ],
+    "description": "Matière première des États-Unis fortement liée au secteur immobilier et à la construction. Volatilité élevée : réagit aux taux hypothécaires, aux autorisations de construction et à la saison de construction printemps/été."
+  },
+  {
+    "symbol": "ORANGEJUICE",
+    "name": "Jus d'orange",
+    "category": "matiere-premiere",
+    "tags": [
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Matière première très concentrée en Floride et au Brésil. Extrêmement sensible aux ouragans, aux gels et aux maladies des agrumes, ce qui peut provoquer des envolées rapides des prix."
+  },
+  {
+    "symbol": "INTC",
+    "name": "Intel Corp.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Semi-conducteur historique, en restructuration majeure. Très sensible à ses résultats trimestriels, aux annonces de nouvelles générations de puces et à la concurrence asiatique et américaine dans le secteur."
+  },
+  {
+    "symbol": "QCOM",
+    "name": "Qualcomm Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Semi-conducteur dominant dans les puces mobiles et le réseau 5G. Réagit à la demande de smartphones et aux actualités réglementaires chinoises (sa plus grande zone de revenus)."
+  },
+  {
+    "symbol": "AVGO",
+    "name": "Broadcom Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Géant des semi-conducteurs et de l'IA (conception de puces réseau/IA). Très sensible à la demande d'infrastructures cloud et aux annonces de méga-datacenters."
+  },
+  {
+    "symbol": "ORCL",
+    "name": "Oracle Corp.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Éditeur logiciel historiquement en transition cloud/IA, avec des investissements massifs dans les datacenters. Réagit fortement à ses résultats même si les flux de trésorerie restent dépendants des licences."
+  },
+  {
+    "symbol": "CRM",
+    "name": "Salesforce Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Leader du CRM (logiciels de gestion de la relation client). Sensible aux cycles de dépenses logicielles des entreprises ; réagit à ses résultats trimestriels et aux annonces IA."
+  },
+  {
+    "symbol": "ADBE",
+    "name": "Adobe Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Éditeur de logiciels créatifs et de marketing (Photoshop, PDF). Historiquement stable, sensible aux résultats trimestriels et à la pression perçue de la concurrence générative."
+  },
+  {
+    "symbol": "CSCO",
+    "name": "Cisco Systems",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Équipementier historique des réseaux (routeurs, switches). Sensible aux dépenses d'infrastructure des entreprises et des opérateurs, et aux cycles de renouvellement du matériel."
+  },
+  {
+    "symbol": "IBM",
+    "name": "IBM Corp.",
+    "category": "action",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Valeur technologique plus défensive, orientée services d'entreprise et mainframe. Réagit à ses résultats trimestriels et aux gros contrats de services, avec une volatilité inférieure aux pure tech."
+  },
+  {
+    "symbol": "TXN",
+    "name": "Texas Instruments",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Semi-conducteur analogique, baromètre du cycle de l'électronique industrielle et automobile. Sensible aux cycles de stocks du secteur et aux données de commandes."
+  },
+  {
+    "symbol": "MU",
+    "name": "Micron Technology",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Producteur de mémoire (DRAM, NAND), dont les prix sont très cycliques. Valeur à forte volatilité : réagit à chaque signe d'équilibre ou de déséquilibre offre/demande sur la mémoire."
+  },
+  {
+    "symbol": "AZN",
+    "name": "AstraZeneca",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Géant pharmaceutique, valeur défensive avec un pipeline important. Peu sensible au cycle économique, réagit à ses résultats de laboratoire et aux autorisations de mise sur le marché."
+  },
+  {
+    "symbol": "NOVO",
+    "name": "Novo Nordisk",
+    "category": "action",
+    "tags": [
+      "sensible-evenements"
+    ],
+    "description": "Leader mondial du traitement du diabète et de l'obésité (Ozempic family). Forte réaction aux données d'essais cliniques et aux annonces de concurrence dans la perte de poids."
+  },
+  {
+    "symbol": "CVX",
+    "name": "Chevron Corp.",
+    "category": "action",
+    "tags": [
+      "sensible-evenements",
+      "actif-saisonnier"
+    ],
+    "description": "Major pétrolière américaine, son action suit le prix du baril et du gaz. Sensible aux décisions OPEP+, aux tensions géopolitiques et à la saisonnalité de la demande de carburant."
+  },
+  {
+    "symbol": "BAC",
+    "name": "Bank of America",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Banque américaine très exposée à la courbe des taux et aux marchés de crédit. Amplifie les phases de risk-on, réagit aux décisions de la Fed et aux publications du secteur bancaire."
+  },
+  {
+    "symbol": "WFC",
+    "name": "Wells Fargo & Co.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Banque commerciale américaine à réseau historique, très dépendante des taux d'intérêt et du crédit immobilier. Sensible aux décisions réglementaires et aux cycles économiques."
+  },
+  {
+    "symbol": "C",
+    "name": "Citigroup Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Banque mondiale très exposée aux marchés de capitaux et à l'international. Volatilité relativement élevée, sensible aux nouvelles économiques et à la vigueur des marchés."
+  },
+  {
+    "symbol": "HD",
+    "name": "Home Depot",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Distributeur du bricolage et de la construction, baromètre de l'activité immobilière américaine. Sensible aux taux hypothécaires et aux ventes de logements existants."
+  },
+  {
+    "symbol": "COST",
+    "name": "Costco Wholesale",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Distributeur grossiste par abonnement, défensif avec des ventes stables en toute période économique. Réagit modérément au cycle, sensible aux marges et à la croissance des adhésions."
+  },
+  {
+    "symbol": "TGT",
+    "name": "Target Corp.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "actif-saisonnier",
+      "sensible-evenements"
+    ],
+    "description": "Distribution généraliste avec une forte saisonnalité (rentrée, fin d'année). Sensible à la consommation des ménages, aux marges de détail et aux publications trimestrielles."
+  },
+  {
+    "symbol": "SBUX",
+    "name": "Starbucks Corp.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Café de consommation discrétionnaire, sensible au pouvoir d'achat aux États-Unis et à la demande chinoise. Réagit à ses résultats trimestriels et aux plans stratégiques."
+  },
+  {
+    "symbol": "CAT",
+    "name": "Caterpillar Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Leader des engins de construction et miniers, baromètre de l'investissement mondial. Très sensible au cycle industriel, aux dépenses d'infrastructure et aux prix des matières premières."
+  },
+  {
+    "symbol": "DE",
+    "name": "Deere & Co.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Leader des équipements agricoles : sensible aux prix des matières premières agricoles (revenus des agriculteurs) et aux dépenses d'équipement. Très lié à la santé agricole mondiale."
+  },
+  {
+    "symbol": "GE",
+    "name": "GE Aerospace",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Motoriste aéronautique (moteurs) en forte croissance : ses revenus de services dépendent du trafic aérien. Sensible aux cycles de livraisons, à la demande de Boeing et Airbus et aux données de trafic."
+  },
+  {
+    "symbol": "UBER",
+    "name": "Uber Technologies",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Plateforme de mobilité et de livraison : valeur de croissance sensible à la consommation, aux régulations sur les indépendants et à ses résultats trimestriels."
+  },
+  {
+    "symbol": "SHOP",
+    "name": "Shopify Inc.",
+    "category": "action",
+    "tags": [
+      "risk-on",
+      "sensible-evenements"
+    ],
+    "description": "Plateforme e-commerce canadienne, valeur de croissance à forte volatilité. Sensible aux cycles de dépenses des commerçants, aux résultats trimestriels et aux annonces de nouveaux services."
+  },
+  {
+    "symbol": "PFE",
+    "name": "Pfizer Inc.",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Géant pharmaceutique américain, valeur défensive à dividende. Son cours réagit aux résultats de R&D, aux brevets arrivant à expiration et aux autorisations réglementaires."
+  },
+  {
+    "symbol": "MRK",
+    "name": "Merck & Co.",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Laboratoire pharmaceutique avec un portefeuille de médicaments stables. Défensif, peu sensible au cycle économique, réagit aux données d'essais cliniques et aux résultats trimestriels."
+  },
+  {
+    "symbol": "ABBV",
+    "name": "AbbVie Inc.",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Laboratoire spécialisé en immunologie et hématologie. Défensif, très réactif aux données cliniques des franchises majeures et aux brevets arrivant à maturité."
+  },
+  {
+    "symbol": "UNH",
+    "name": "UnitedHealth Group",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Leader américain de l'assurance santé et des services de santé. Défensif, sensible aux politiques de santé publiques et aux coûts médicaux aux États-Unis."
+  },
+  {
+    "symbol": "VZ",
+    "name": "Verizon Communications",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Opérateur télécom américain, dividende élevé et revenus stables (abonnements). Comportement défensif, sensible aux coûts d'investissement réseau et à la concurrence."
+  },
+  {
+    "symbol": "T",
+    "name": "AT&T Inc.",
+    "category": "action",
+    "tags": [
+      "risk-off"
+    ],
+    "description": "Opérateur télécom américain, défensif avec un dividende généreux. Sensible à l'endettement du groupe et aux tarifs de la concurrence mobile."
   }
 ]
