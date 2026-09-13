@@ -30,9 +30,10 @@ function isConfigured() {
 }
 
 function toCurrencyAmount(amountUsd) {
-  // Genius Pay facture en FCFA (XOF, montant minimum 200) : on convertit le
-  // montant en dollars avec le taux indicatif utilisé partout dans l'app.
-  return Math.round(amountUsd * USD_TO_XOF_RATE);
+  // ⚠️ TEMPORAIRE (test réel) : force le montant minimum Genius Pay (200 XOF)
+  // pour permettre d'effectuer un paiement réel à faible coût.
+  // TODO: RETIRER après le test — revenir à Math.round(amountUsd * USD_TO_XOF_RATE).
+  return 200;
 }
 
 function buildError(message, statusCode, code) {
