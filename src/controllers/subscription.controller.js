@@ -129,10 +129,11 @@ const choosePlan = asyncHandler(async (req, res) => {
 // Initie un paiement Genius Pay pour un forfait payant (ou active directement
 // l'essai gratuit). Renvoie { payUrl, checkoutRef, mode } au frontend.
 //
-// Pour le mobile money, le client doit fournir son téléphone (international)
-// et idéalement choisir son moyen de paiement (orange_money / mtn_money /
-// wave / moov_money / card). Sans moyen explicite + téléphone, la page de
-// checkout hébergée route vers un gateway générique qui peut rester bloqué.
+// `paymentMethod` est optionnel : sans lui, Genius Pay affiche sa page de
+// checkout hébergée où le client choisit son opérateur — voie recommandée pour
+// le Burkina Faso (+226), car l'agrégateur auto par numéro ne couvre pas le BF.
+// Sinon : 'orange_money' | 'mtn_money' | 'moov_money' | 'wave' | 'card'
+// (téléphone alors requis pour le mobile money).
 const createCheckoutSession = asyncHandler(async (req, res) => {
   const { planId } = req.body;
   const plan = getPlan(planId);
