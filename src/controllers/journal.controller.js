@@ -2,6 +2,7 @@
 // Contrôleur JournalEntry : CRUD complet, filtré par utilisateur.
 // Les trades liés sont toujours vérifiés pour appartenir à l'utilisateur courant.
 
+const mongoose = require('mongoose');
 const JournalEntry = require('../models/JournalEntry');
 const Trade = require('../models/Trade');
 const ApiError = require('../utils/ApiError');
@@ -23,14 +24,23 @@ function pickEntryFields(body) {
   return data;
 }
 
-// Vérifie que les trades liés appartiennent bien à l'utilisateur.
+// Vérifie que les trades liés appartiennent bien à l'utilisateur. Les
+// identifiants non-ObjectId (ex : UUID local d'un trade pas encore synchronisé)
+// sont ignorés proprement : sinon Mongoose lèverait une CastError et
+// empêcherait la création/mise à jour de l'entrée de journal.
 async function resolveLinkedTrades(linkedTradeIds, userId) {
   if (!Array.isArray(linkedTradeIds) || linkedTradeIds.length === 0) {
     return [];
   }
 
+  const validIds = linkedTradeIds.filter((id) => mongoose.isValidObjectId(id));
+
+  if (validIds.length === 0) {
+    return [];
+  }
+
   const trades = await Trade.find({
-    _id: { $in: linkedTradeIds },
+    _id: { $in: validIds },
     user: userId,
   }).select('_id');
 

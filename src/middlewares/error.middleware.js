@@ -10,7 +10,7 @@ function notFound(req, _res, next) {
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, _req, res, _next) {
-  const statusCode = err.statusCode && err.statusCode >= 400 ? err.statusCode : 500;
+  let statusCode = err.statusCode && err.statusCode >= 400 ? err.statusCode : 500;
 
   // Traduit quelques erreurs Mongoose fréquentes en messages plus lisibles.
   let message = err.message || 'Erreur interne du serveur.';
@@ -23,8 +23,12 @@ function errorHandler(err, _req, res, _next) {
     const field = Object.keys(err.keyValue || {})[0] || 'champ';
     message = `Cette valeur pour "${field}" est déjà utilisée.`;
   }
+  // Un identifiant invalide ou inexistant est une ressource introuvable (404),
+  // pas une erreur serveur (500) : permet aux clients (dont l'app desktop)
+  // d'utiliser 404 pour déclencher leur création/remap en cas d'id inconnu.
   if (err.name === 'CastError') {
-    message = 'Identifiant invalide.';
+    message = 'Ressource introuvable (identifiant invalide).';
+    statusCode = 404;
   }
 
   if (!err.isOperational && statusCode === 500) {

@@ -125,9 +125,14 @@ const choosePlan = asyncHandler(async (req, res) => {
   res.json({ success: true, data: req.user.toJSON() });
 });
 
-// POST /api/subscriptions/checkout   { planId }
+// POST /api/subscriptions/checkout   { planId, phone?, paymentMethod? }
 // Initie un paiement Genius Pay pour un forfait payant (ou active directement
 // l'essai gratuit). Renvoie { payUrl, checkoutRef, mode } au frontend.
+//
+// Pour le mobile money, le client doit fournir son téléphone (international)
+// et idéalement choisir son moyen de paiement (orange_money / mtn_money /
+// wave / moov_money / card). Sans moyen explicite + téléphone, la page de
+// checkout hébergée route vers un gateway générique qui peut rester bloqué.
 const createCheckoutSession = asyncHandler(async (req, res) => {
   const { planId } = req.body;
   const plan = getPlan(planId);
@@ -149,6 +154,24 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
     });
   }
 
+  // Téléphone du client (optionnel pour 'card', requis en pratique pour le
+  // mobile money). Format international : +225 07 00 00 00 00.
+  let phone = '';
+  const rawPhone = String((req.body && req.body.phone) || '').trim();
+  if (rawPhone) {
+    phone = geniusPay.sanitizePhone(rawPhone);
+    const digits = phone.replace(/\D/g, '');
+    if (!/^\+\d+$/.test(phone) || digits.length < 8 || digits.length > 15) {
+      throw new ApiError(400, 'Numéro de téléphone invalide. Utilisez le format international ex : +225 07 00 00 00 00.');
+    }
+  }
+
+  // Moyen de paiement choisi par l'utilisateur.
+  const paymentMethod = String((req.body && req.body.paymentMethod) || '').trim();
+  if (paymentMethod && !['orange_money', 'mtn_money', 'wave', 'moov_money', 'card'].includes(paymentMethod)) {
+    throw new ApiError(400, 'Moyen de paiement non supporté.', 'PAYMENT_METHOD_UNSUPPORTED');
+  }
+
   // Forfait payant : il faut que Genius Pay soit configuré.
   if (!geniusPay.isConfigured()) {
     throw new ApiError(
@@ -163,6 +186,8 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
   const returnUrl = `${pricingBase}?resultat=succes&ref=${checkoutRef}`;
   const cancelUrl = `${pricingBase}?resultat=annule`;
 
+  const country = phone ? geniusPay.detectCountryFromPhone(phone) || undefined : undefined;
+
   const checkout = await geniusPay.createCheckout({
     amountUsd: plan.priceUsd,
     currency: env.geniusPay.currency,
@@ -170,7 +195,8 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
     externalId: checkoutRef,
     returnUrl,
     cancelUrl,
-    customer: { email: req.user.email, name: req.user.name },
+    customer: { email: req.user.email, name: req.user.name, phone, country },
+    paymentMethod,
   });
 
   // Enregistre l'abonnement en attente de confirmation (le webhook le passera

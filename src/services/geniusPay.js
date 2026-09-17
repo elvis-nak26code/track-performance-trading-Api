@@ -1,12 +1,21 @@
 // Service d'intégration du prestataire de paiement Genius Pay.
 //
 // Documentation officielle (mode Marchand) :
-//   Base URL  : https://geniuspay.ci/api/v1/merchant
-//   Auth      : en-têtes `X-API-Key` (clé publique) et `X-API-Secret` (clé secrète)
-//   Créer     : POST /payments  ->  { data: { reference, checkout_url, ... } }
+//   Base URL  : https://pay.genius.ci/api/v1/merchant (l'ancien domaine
+//               https://geniuspay.ci/api/v1/merchant répond toujours).
+//   Auth      : en-têtes `X-API-Key` (clé publique) et `X-API-SECRET` (clé secrète)
+//   Créer     : POST /payments  ->  { data: { reference, checkout_url | payment_url, ... } }
 //   Webhook   : signature HMAC-SHA256 sur timestamp + "." + corps brut, dans
 //               l'en-tête `X-Webhook-Signature` (+ `X-Webhook-Timestamp`,
 //               `X-Webhook-Event`, `X-Webhook-Environment`).
+//
+// Mobile money (constat 2026-09) : la page de checkout hébergée (sans
+// `payment_method`) route le mobile money vers un gateway générique qui reste
+// bloqué en "processing" pour les numéros burkinabè (+226). Pour un paiement
+// mobile money fiable, on passe donc TOUJOURS un `payment_method` explicite
+// (orange_money / mtn_money / wave / moov_money / card) accompagné du téléphone
+// et du pays du client. Ces codes couvrent CI (+225) et BF (+226).
+// NB : PawaPay (agrégateur MMO documenté) ne couvre PAS le Burkina Faso.
 //
 // En mode SANDBOX, seule la base URL et les clés changent (sk_sandbox_... /
 // ss_sandbox_...). Le code d'intégration est identique en production.
@@ -23,6 +32,65 @@ const USD_TO_XOF_RATE = 600; // taux indicatif, identique à src/constants/plans
 const CONFIG = {
   baseUrl: (env.geniusPay.baseUrl || 'https://geniuspay.ci/api/v1/merchant').replace(/\/+$/, ''),
 };
+
+// Moyens de paiement directs supportés par Genius Pay pour CI (+225) ET BF (+226).
+// (Voir tableau "Méthodes de paiement" de la doc officielle.)
+const SUPPORTED_PAYMENT_METHODS = [
+  'orange_money',
+  'mtn_money',
+  'wave',
+  'moov_money',
+  'card',
+];
+
+// Préfixes internationaux → pays ISO2, pour le routage PawaPay / la détection.
+const PHONE_COUNTRY_PREFIXES = [
+  ['+225', 'CI'], // Côte d'Ivoire
+  ['+226', 'BF'], // Burkina Faso
+  ['+221', 'SN'], // Sénégal
+  ['+223', 'ML'], // Mali
+  ['+229', 'BJ'], // Bénin
+  ['+228', 'TG'], // Togo
+  ['+227', 'NE'], // Niger
+  ['+224', 'GN'], // Guinée
+  ['+245', 'GW'], // Guinée-Bissau
+  ['+232', 'SL'], // Sierra Leone
+  ['+233', 'GH'], // Ghana
+  ['+234', 'NG'], // Nigeria
+  ['+237', 'CM'], // Cameroun
+  ['+241', 'GA'], // Gabon
+  ['+242', 'CG'], // République du Congo
+  ['+243', 'CD'], // RD Congo
+  ['+236', 'CF'], // Centrafrique
+  ['+240', 'GQ'], // Guinée équatoriale
+  ['+244', 'AO'], // Angola
+  ['+254', 'KE'], // Kenya
+  ['+256', 'UG'], // Ouganda
+  ['+250', 'RW'], // Rwanda
+  ['+260', 'ZM'], // Zambie
+  ['+255', 'TZ'], // Tanzanie
+  ['+258', 'MZ'], // Mozambique
+  ['+257', 'BI'], // Burundi
+];
+
+// Moyen de paiement par défaut quand le client n'en choisit pas (tout monde
+// confondu, orange_money est le plus universel CI + BF).
+const DEFAULT_METHOD_BY_COUNTRY = {};
+
+/** Nettoie un numéro : ne conserve que les chiffres et le '+' initial. */
+function sanitizePhone(input) {
+  return String(input || '').trim().replace(/[^\d+]/g, '');
+}
+
+/** Déduit le pays (ISO2) d'un numéro international, ou null si inconnu. */
+function detectCountryFromPhone(phone) {
+  const p = sanitizePhone(phone);
+  if (!p.startsWith('+')) return null;
+  for (const [prefix, country] of PHONE_COUNTRY_PREFIXES) {
+    if (p.startsWith(prefix)) return country;
+  }
+  return null;
+}
 
 /** Le service n'est actif que si les deux clés API sont renseignées. */
 function isConfigured() {
@@ -44,8 +112,12 @@ function buildError(message, statusCode, code) {
 }
 
 /**
- * Crée une demande de paiement côté Genius Pay et renvoie l'URL de checkout
- * à laquelle rediriger le navigateur de l'utilisateur.
+ * Crée une demande de paiement côté Genius Pay et renvoie l'URL vers laquelle
+ * rediriger le navigateur de l'utilisateur.
+ *
+ * Pour le mobile money (Orange/MTN/Moov/Wave), un `payment_method` explicite
+ * + le téléphone du client sont OBLIGATOIRES pour obtenir un push USSD/SMS
+ * et éviter le gateway générique (constat : transactions bloquées sinon).
  *
  * @param {object} opts
  * @param {number} opts.amountUsd montant en dollars américains
@@ -54,7 +126,15 @@ function buildError(message, statusCode, code) {
  * @param {string} opts.externalId référence unique côté application (checkoutRef)
  * @param {string} opts.returnUrl URL de retour après paiement réussi (success_url)
  * @param {string} opts.cancelUrl URL de retour après échec/annulation (error_url)
- * @param {{email?: string, name?: string}} opts.customer client
+ * @param {{email?: string, name?: string, phone?: string, country?: string}} opts.customer
+ *        client ; `phone` en format international (+225...), `country` en ISO2.
+ * @param {string} [opts.paymentMethod] moyen de paiement direct : 'orange_money',
+ *        'mtn_money', 'wave', 'moov_money', 'card'. Si absent mais que le pays
+ *        est détectable depuis le téléphone, on force 'orange_money' (sinon,
+ *        page de checkout Genius Pay hébergée).
+ * @param {string} [opts.gateway] gateway explicite (ex: 'orange_money')
+ * @param {string} [opts.mmoProvider] code fournisseur PawaPay (réservé à
+ *        payment_method='pawapay', non proposé ici).
  * @returns {Promise<{ payUrl: string, providerRef: string }>}
  */
 async function createCheckout(opts) {
@@ -66,17 +146,37 @@ async function createCheckout(opts) {
     );
   }
 
+  const customer = {
+    name: opts.customer?.name || '',
+    email: opts.customer?.email || '',
+  };
+  const phone = sanitizePhone(opts.customer?.phone);
+  if (phone) customer.phone = phone;
+
+  // Payement direct (recommandé pour le mobile money) : si un moyen explicite
+  // est fourni, ou si on sait déduire le pays du numéro, on l'applique.
+  let method = String(opts.paymentMethod || '').trim();
+  let country = String(opts.customer?.country || '').trim().toUpperCase();
+  if (phone) {
+    country = detectCountryFromPhone(phone) || country || null;
+    if (country) customer.country = country;
+    if (!method && country) {
+      method = DEFAULT_METHOD_BY_COUNTRY[country] || 'orange_money';
+    }
+  }
+  if (method && !SUPPORTED_PAYMENT_METHODS.includes(method)) {
+    throw buildError(`Moyen de paiement non supporté par Genius Pay : ${method}`, 400, 'PAYMENT_METHOD_UNSUPPORTED');
+  }
+
   const payload = {
     amount: toCurrencyAmount(opts.amountUsd),
     // Devises acceptées par Genius Pay : XOF, EUR, USD.
     currency: opts.currency || 'XOF',
     description: opts.description,
-    // Omission de `payment_method` => page de checkout Genius Pay hébergée
-    // (le client choisit son moyen de paiement). Approche recommandée.
-    customer: {
-      name: opts.customer?.name || '',
-      email: opts.customer?.email || '',
-    },
+    // Omission de `payment_method` => page de checkout Genius Pay hébergée.
+    // Avec `payment_method` (+ téléphone/pays), redirection directe vers le
+    // gateway ciblé — c'est la voie fiable pour Orange Money / MTN / Moov.
+    customer,
     // Genius Pay renvoie ces données telles quelles dans les webhooks : c'est
     // via checkout_ref qu'on retrouvera la subscription "pending".
     success_url: opts.returnUrl,
@@ -85,6 +185,11 @@ async function createCheckout(opts) {
       checkout_ref: opts.externalId,
     },
   };
+  if (method) {
+    payload.payment_method = method;
+    if (opts.gateway) payload.gateway = String(opts.gateway).trim();
+    if (opts.mmoProvider) payload.mmo_provider = String(opts.mmoProvider).trim();
+  }
 
   let response;
   try {
@@ -192,4 +297,11 @@ function safeEqualHex(a, b) {
   return crypto.timingSafeEqual(bufA, bufB);
 }
 
-module.exports = { isConfigured, createCheckout, verifyWebhookSignature, toCurrencyAmount };
+module.exports = {
+  isConfigured,
+  createCheckout,
+  verifyWebhookSignature,
+  toCurrencyAmount,
+  sanitizePhone,
+  detectCountryFromPhone,
+};
