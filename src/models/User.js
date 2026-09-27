@@ -84,6 +84,18 @@ const userSchema = new Schema(
       type: Date,
       default: null,
     },
+
+    // Réinitialisation du mot de passe : code à 6 chiffres haché (bcrypt) +
+    // date d'expiration (30 min). Le code est effacé après utilisation.
+    resetPasswordCode: {
+      type: String,
+      select: false,
+      default: null,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true, // createdAt / updatedAt automatiques
@@ -115,6 +127,26 @@ userSchema.pre('save', async function hashPassword(next) {
 userSchema.methods.comparePassword = function comparePassword(plainPassword) {
   if (!this.passwordHash) return Promise.resolve(false);
   return bcrypt.compare(plainPassword, this.passwordHash);
+};
+
+// Génère et stocke un code de réinitialisation de mot de passe (haché),
+// valable 30 minutes. Renvoie le code en clair pour l'envoyer par e-mail.
+userSchema.methods.setResetCode = async function setResetCode() {
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const salt = await bcrypt.genSalt(10);
+  this.resetPasswordCode = await bcrypt.hash(code, salt);
+  this.resetPasswordExpires = new Date(Date.now() + 30 * 60 * 1000);
+  return code;
+};
+
+// Vérifie un code de réinitialisation (comparaison à temps constant via
+// bcrypt) et sa date d'expiration.
+userSchema.methods.verifyResetCode = function verifyResetCode(code) {
+  if (!this.resetPasswordCode) return Promise.resolve(false);
+  if (!this.resetPasswordExpires || this.resetPasswordExpires < new Date()) {
+    return Promise.resolve(false);
+  }
+  return bcrypt.compare(String(code), this.resetPasswordCode);
 };
 
 module.exports = mongoose.model('User', userSchema);

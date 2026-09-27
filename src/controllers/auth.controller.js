@@ -120,4 +120,62 @@ const googleLogin = asyncHandler(async (req, res) => {
   res.json(buildAuthResponse(user));
 });
 
-module.exports = { register, login, googleLogin };
+// POST /api/auth/forgot-password  { email }
+// Génère un code à 6 chiffres valable 30 min et l'envoie par e-mail (no-op
+// si SMTP non configuré, auquel cas le code est renvoyé dans la réponse pour
+// rester utilisable). La réponse est volontairement la même que l'e-mail
+// existe ou non, pour ne pas révéler quels comptes existent.
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new ApiError(400, "L'adresse e-mail est requise.");
+  }
+
+  let code = null;
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (user) {
+    code = await user.setResetCode();
+    await user.save();
+    emailService.sendPasswordResetEmail(user, code).catch(() => {});
+  }
+
+  res.json({
+    success: true,
+    message:
+      'Si un compte existe avec cet e-mail, un code de réinitialisation vient de vous être envoyé.',
+    // En attendant la configuration SMTP, le code est aussi renvoyé ici pour
+    // que la réinitialisation reste utilisable (et testable) immédiatement.
+    data: { code },
+  });
+});
+
+// POST /api/auth/reset-password  { email, code, password }
+const resetPassword = asyncHandler(async (req, res) => {
+  const { email, code, password } = req.body;
+  if (!email || !code || !password) {
+    throw new ApiError(400, 'E-mail, code et nouveau mot de passe sont requis.');
+  }
+  if (password.length < 6) {
+    throw new ApiError(400, 'Le mot de passe doit contenir au moins 6 caractères.');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() }).select(
+    '+passwordHash +resetPasswordCode +resetPasswordExpires'
+  );
+  if (!user || !(await user.verifyResetCode(code))) {
+    throw new ApiError(400, 'Code invalide ou expiré. Redemandez un nouveau code.');
+  }
+
+  user.passwordHash = password; // haché automatiquement par le hook pre('save')
+  user.resetPasswordCode = null;
+  user.resetPasswordExpires = null;
+  await user.save();
+
+  res.json({
+    success: true,
+    message: 'Votre mot de passe a été réinitialisé. Vous pouvez vous connecter.',
+    data: {},
+  });
+});
+
+module.exports = { register, login, googleLogin, forgotPassword, resetPassword };

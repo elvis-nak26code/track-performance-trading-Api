@@ -119,9 +119,37 @@ function sendExpiryReminderEmail(user, plan, daysRemaining) {
   });
 }
 
+/**
+ * E-mail de réinitialisation du mot de passe (mot de passe oublié). Le code
+ * à 6 chiffres est aussi renvoyé dans la réponse de l'API tant que l'e-mail
+ * n'est pas configuré, pour que la fonction reste utilisable (voir
+ * auth.controller.js).
+ */
+function sendPasswordResetEmail(user, code) {
+  return sendEmail({
+    to: user.email,
+    subject: 'Réinitialisation de votre mot de passe 🔑',
+    text: [
+      `Bonjour ${user.name || user.email},`,
+      '',
+      'Une demande de réinitialisation de mot de passe vient d\'être faite',
+      'pour votre compte BlackTracker.',
+      '',
+      `Votre code de vérification : ${code}`,
+      '',
+      'Ce code est valable 30 minutes.',
+      'Si vous n\'êtes pas à l\'origine de cette demande, ignorez simplement',
+      'cet e-mail et votre mot de passe restera inchangé.',
+      '',
+      '— L\'équipe BlackTracker',
+    ].join('\n'),
+  });
+}
+
 module.exports = {
   isEmailConfigured,
   sendWelcomeEmail,
   sendSubscriptionConfirmationEmail,
   sendExpiryReminderEmail,
+  sendPasswordResetEmail,
 };

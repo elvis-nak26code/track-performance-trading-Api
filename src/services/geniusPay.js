@@ -97,10 +97,7 @@ function isConfigured() {
 }
 
 function toCurrencyAmount(amountUsd) {
-  // ⚠️ TEMPORAIRE (test réel) : force le montant minimum Genius Pay (200 XOF)
-  // pour permettre d'effectuer un paiement réel à faible coût.
-  // TODO: RETIRER après le test — revenir à Math.round(amountUsd * USD_TO_XOF_RATE).
-  return 200;
+  return Math.round(amountUsd * USD_TO_XOF_RATE);
 }
 
 function buildError(message, statusCode, code) {
