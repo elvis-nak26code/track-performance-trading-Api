@@ -9,6 +9,7 @@ const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
 const cloudinary = require('../config/cloudinary');
 const crypto = require('crypto');
+const { MAX_SCREENSHOTS } = require('../middlewares/upload.middleware');
 
 const ALLOWED_FIELDS = ['date', 'instrument', 'mood', 'text'];
 
@@ -172,6 +173,13 @@ const createJournalEntry = asyncHandler(async (req, res) => {
     []
   );
 
+  if (metadata.length > MAX_SCREENSHOTS) {
+    throw new ApiError(
+      400,
+      `Une entrée ne peut pas contenir plus de ${MAX_SCREENSHOTS} captures.`
+    );
+  }
+
   const screenshots = [];
 
   for (let i = 0; i < (req.files || []).length; i++) {
@@ -309,11 +317,11 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
     });
   }
 
-  // Maximum de 6 captures.
-  if (screenshots.length > 6) {
+  // Maximum de captures par entrée.
+  if (screenshots.length > MAX_SCREENSHOTS) {
     throw new ApiError(
       400,
-      'Une entrée ne peut pas contenir plus de 6 captures.'
+      `Une entrée ne peut pas contenir plus de ${MAX_SCREENSHOTS} captures.`
     );
   }
 

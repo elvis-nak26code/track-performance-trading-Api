@@ -52,6 +52,12 @@ function isPlanExpired(user) {
  * écoute pour afficher la fenêtre d'invitation au paiement.
  */
 const requireActivePlan = asyncHandler(async (req, _res, next) => {
+  // DÉSACTIVATION TEMPORAIRE DES TARIFS : tant que FREE_ACCESS=true, la
+  // plateforme fonctionne entièrement gratuitement (aucun blocage d'écriture).
+  // Pour réactiver la facturation, passez FREE_ACCESS=false dans .env et
+  // rétablissez le blocage ci-dessous.
+  if (process.env.FREE_ACCESS === 'true') return next();
+
   if (isPlanExpired(req.user)) {
     throw new ApiError(
       403,

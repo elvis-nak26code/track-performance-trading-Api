@@ -8,6 +8,7 @@ const tradeRoutes = require('./trade.routes');
 const journalRoutes = require('./journal.routes');
 const marketRoutes = require('./market.routes');
 const subscriptionRoutes = require('./subscription.routes');
+const strategyRoutes = require('./strategy.routes');
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use('/trades', tradeRoutes);
 router.use('/journal-entries', journalRoutes);
 router.use('/markets', marketRoutes);
 router.use('/subscriptions', subscriptionRoutes);
+router.use('/strategies', strategyRoutes);
 
 module.exports = router;

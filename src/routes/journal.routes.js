@@ -21,9 +21,9 @@ router.use(protect);
 router.get('/', getJournalEntries);
 // Créer une entrée de journal exige un forfait actif ; lire/éditer/supprimer
 // les entrées existantes reste possible (les données restent visibles).
-router.post('/', requireActivePlan, upload.array('screenshots', 6), createJournalEntry);
+router.post('/', requireActivePlan, upload.array('screenshots', upload.MAX_SCREENSHOTS), createJournalEntry);
 router.get('/:id', getJournalEntryById);
-router.put('/:id', upload.array('screenshots', 6), updateJournalEntry);
+router.put('/:id', upload.array('screenshots', upload.MAX_SCREENSHOTS), updateJournalEntry);
 router.delete('/:id', deleteJournalEntry);
 
 module.exports = router;

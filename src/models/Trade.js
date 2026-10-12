@@ -41,14 +41,15 @@ const tradeSchema = new Schema(
       enum: ['long', 'short'],
       required: true,
     },
+    // Prix d'entrée/sortie : optionnels — le logiciel ne calcule plus rien
+    // à partir d'eux (P&L et R sont saisis directement), ils ne sont gardés
+    // que pour la compatibilité d'imports CSV existants.
     entryPrice: {
       type: Number,
-      required: true,
       min: [0, 'Le prix d\'entrée ne peut pas être négatif.'],
     },
     exitPrice: {
       type: Number,
-      required: true,
       min: [0, 'Le prix de sortie ne peut pas être négatif.'],
     },
     quantity: {
