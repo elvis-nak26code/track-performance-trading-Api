@@ -40,10 +40,18 @@ const createMarket = asyncHandler(async (req, res) => {
 });
 
 // DELETE /api/markets/:id   (suppression depuis /marches ou le tableau de bord)
+// Un utilisateur ne peut supprimer que les marchés qu'il a lui-même créés ;
+// le catalogue de référence (non custom) est partagé et intouchable.
 const deleteMarket = asyncHandler(async (req, res) => {
   const market = await Market.findById(req.params.id);
   if (!market) {
     throw new ApiError(404, 'Marché introuvable.');
+  }
+  if (!market.isCustom) {
+    throw new ApiError(403, 'Ce marché de référence ne peut pas être supprimé.');
+  }
+  if (market.createdBy && market.createdBy.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "Vous ne pouvez pas supprimer un marché créé par un autre compte.");
   }
   await Market.findByIdAndDelete(market._id);
   res.json({ success: true, data: market });

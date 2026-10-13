@@ -182,6 +182,14 @@ const createJournalEntry = asyncHandler(async (req, res) => {
 
   const screenshots = [];
 
+  // Les fichiers multipart correspondent UNIQUEMENT aux captures marquées
+  // `isNew` (même convention que updateJournalEntry) : on aligne les métadonnées
+  // sur ces seules captures pour éviter tout désalignement METADATA ↔ octets
+  // quand l'entrée contient un mélange d'anciennes et de nouvelles images.
+  const newMetadata = metadata.filter(
+    (m) => m && m.isNew === true
+  );
+
   for (let i = 0; i < (req.files || []).length; i++) {
     const file = req.files[i];
 
@@ -190,7 +198,7 @@ const createJournalEntry = asyncHandler(async (req, res) => {
       req.user._id.toString()
     );
 
-    const item = metadata[i] || {};
+    const item = newMetadata[i] || {};
 
     screenshots.push({
       id: item.id || crypto.randomUUID(),
