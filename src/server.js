@@ -6,11 +6,6 @@ const env = require('./config/env');
 const { connectDatabase } = require('./config/database');
 const Market = require('./models/Market');
 const marketsSeed = require('./data/markets.seed.json');
-const { runExpiryReminders } = require('./jobs/expiryReminder');
-
-// Cadence du job de rappel d'expiration (6 h). Le job se ré-exécute via
-// setInterval ; chaque passage est protégé contre les chevauchements.
-const EXPIRY_REMINDER_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 // Pré-remplit la collection "markets" avec le catalogue de référence au
 // démarrage. Compatible avec une collection déjà peuplée : seuls les
@@ -19,8 +14,10 @@ const EXPIRY_REMINDER_INTERVAL_MS = 6 * 60 * 60 * 1000;
 // /marches est ainsi toujours utilisable sans passer par seed:markets.
 async function seedMarketsIfEmpty() {
   const count = await Market.estimatedDocumentCount();
+  // Seuls les marchés de RÉFÉRENCE comptent ici : les marchés personnalisés
+  // d'un utilisateur ne doivent pas empêcher l'ajout d'un actif de référence.
   const existingSymbols = new Set(
-    (await Market.find({}, { symbol: 1 })).map((m) => m.symbol.toUpperCase())
+    (await Market.find({ isCustom: false }, { symbol: 1 })).map((m) => m.symbol.toUpperCase())
   );
 
   const missing = marketsSeed.filter(
@@ -40,17 +37,16 @@ async function seedMarketsIfEmpty() {
 
 async function start() {
   await connectDatabase();
+  // Aligne les index de la collection "markets" sur le schéma (l'ancien index
+  // unique global sur "symbol" est remplacé par un index unique par propriétaire,
+  // pour que les marchés personnalisés d'un utilisateur restent privés).
+  await Market.syncIndexes();
   await seedMarketsIfEmpty();
 
   const server = app.listen(env.port, () => {
     console.log(`[serveur] Journal de Trading API démarrée sur le port ${env.port} (${env.nodeEnv}).`);
     console.log(`[serveur] CORS autorisé pour : ${env.frontendUrl}`);
   });
-
-  // Reminders d'expiration : premier passage différé (15 s, laisse la DB
-  // chauffer) puis toutes les 6 h. Inoffensif sans SMTP configuré (no-op).
-  setTimeout(runExpiryReminders, 15_000);
-  setInterval(runExpiryReminders, EXPIRY_REMINDER_INTERVAL_MS);
 
   // Arrêt propre (ex: redéploiement) : on laisse les requêtes en cours se
   // terminer avant de couper le process.

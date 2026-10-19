@@ -1,109 +1,80 @@
-# Journal de Trading — Backend
+# Journal de Trading (BlackTracker) — Backend
 
-API REST (Node.js + Express + MongoDB/Mongoose + JWT) pour l'application
-**Journal de Trading**. Conçue pour être branchée directement sur le
-frontend existant : il suffit de passer `VITE_USE_MOCK_DATA=false` et de
-renseigner `VITE_API_BASE_URL=http://localhost:5000/api` côté frontend.
+API REST (Node.js + Express + MongoDB/Mongoose + JWT) du **Journal de Trading**.
+**Le logiciel est entièrement gratuit** : il n'y a ni paiement, ni forfait, ni
+tarif, ni période d'essai.
 
 ## Démarrage rapide
 
 ```bash
 npm install
-cp .env.example .env   # puis renseignez vos valeurs (voir ci-dessous)
-npm run seed:markets   # peuple la collection "markets" (une seule fois)
-npm run dev             # démarre avec nodemon (rechargement automatique)
+cp .env.example .env   # puis renseignez vos valeurs
+npm run dev            # démarre avec nodemon
+npm test               # tests d'isolation des données (sans base de données)
 ```
 
-Le serveur écoute par défaut sur `http://localhost:5000`.
+Le serveur écoute par défaut sur `http://localhost:5000`. Au démarrage, il
+aligne les index de la collection `markets` et ajoute au catalogue les actifs de
+référence manquants (`src/data/markets.seed.json`).
 
-Prérequis : une instance MongoDB accessible (locale ou MongoDB Atlas) — voir
-`MONGODB_URI` dans `.env.example`.
+Prérequis : une instance MongoDB (locale ou Atlas) — voir `MONGODB_URI`.
 
 ## Variables d'environnement
 
-Toutes les variables sont documentées avec des commentaires en français
-dans `.env.example`. Les plus importantes :
+Toutes documentées dans `.env.example` : `MONGODB_URI`, `JWT_SECRET`,
+`GOOGLE_CLIENT_ID`, `FRONTEND_URL`, `CLOUDINARY_*` (captures d'écran), `SMTP_*`
+(e-mails, optionnels).
 
-| Variable | Rôle |
-|---|---|
-| `MONGODB_URI` | Chaîne de connexion MongoDB |
-| `JWT_SECRET` | Clé de signature des tokens JWT (à générer aléatoirement) |
-| `GOOGLE_CLIENT_ID` | Doit être identique à celui du frontend, pour vérifier les connexions Google |
-| `FRONTEND_URL` | Origine autorisée en CORS |
-| `GENIUS_PAY_*` | Réservées à l'intégration future du paiement (non utilisées pour l'instant) |
+## Isolation des données
 
-## Structure du projet
+- Trades, entrées de journal et stratégies appartiennent à **un seul
+  utilisateur** : chaque requête est filtrée par `user = req.user._id` (lecture,
+  modification, suppression) et le champ `user` envoyé par un client est ignoré.
+- Les trades liés à une entrée de journal sont vérifiés (ils doivent appartenir
+  au même utilisateur).
+- Marchés : le catalogue de **référence** est partagé (lecture seule) ; les
+  marchés **personnalisés** sont privés à leur créateur.
+- Les captures d'écran sont rangées par utilisateur dans Cloudinary
+  (`trading-journal/users/<id>`).
 
-```
-src/
-  config/       chargement des variables d'env + connexion MongoDB
-  models/       schémas Mongoose (User, Trade, JournalEntry, Market, Subscription)
-  middlewares/  authentification JWT, gestion centralisée des erreurs
-  controllers/  logique métier de chaque ressource
-  routes/       déclaration des endpoints Express
-  utils/        JWT, vérification Google, ApiError, asyncHandler
-  data/         données de seed (catalogue de marchés)
-  scripts/      scripts exécutables (seed:markets)
-  app.js        configuration Express (middlewares + montage des routes)
-  server.js     point d'entrée (connexion DB + démarrage du serveur)
-```
+## Endpoints
 
-## Authentification
-
-- **E-mail / mot de passe** : `POST /api/auth/register`, `POST /api/auth/login`.
-  Le mot de passe est haché avec bcrypt avant stockage.
-- **Google** : `POST /api/auth/google` avec `{ credential }` (le jeton renvoyé
-  par le bouton Google du frontend). Le backend vérifie la signature ET
-  l'audience du jeton auprès de Google (pas un simple décodage).
-- Chaque connexion réussie renvoie `{ user, token }`. Le frontend doit
-  ensuite envoyer `Authorization: Bearer <token>` sur toutes les requêtes
-  protégées.
-
-## Endpoints disponibles
-
-Toutes les routes sauf `/api/auth/*`, `/api/health` et
-`/api/subscriptions/plans` nécessitent l'en-tête `Authorization: Bearer <token>`.
+Toutes les routes sauf `/api/auth/*` et `/api/health` exigent
+`Authorization: Bearer <token>`.
 
 | Méthode | Route | Description |
 |---|---|---|
 | GET | `/api/health` | Vérifie que l'API répond |
-| POST | `/api/auth/register` | Créer un compte e-mail/mot de passe |
-| POST | `/api/auth/login` | Se connecter |
-| POST | `/api/auth/google` | Se connecter avec Google |
-| GET | `/api/users/me` | Profil de l'utilisateur connecté |
-| PUT | `/api/users/me` | Modifier le nom |
-| PUT | `/api/users/me/settings` | Modifier la valeur de 1R et le risque par défaut |
-| GET | `/api/trades` | Liste des trades de l'utilisateur |
-| POST | `/api/trades` | Créer un trade |
-| POST | `/api/trades/bulk` | Créer plusieurs trades (import CSV) |
-| GET/PUT/DELETE | `/api/trades/:id` | Lire / modifier / supprimer un trade |
-| GET | `/api/journal-entries` | Liste des entrées de journal |
-| POST | `/api/journal-entries` | Créer une entrée |
-| GET/PUT/DELETE | `/api/journal-entries/:id` | Lire / modifier / supprimer une entrée |
-| GET | `/api/markets` | Catalogue de référence des marchés |
-| POST | `/api/markets` | Ajouter un marché manuellement |
-| GET | `/api/subscriptions/plans` | Liste des forfaits (public) |
-| GET | `/api/subscriptions/me` | Forfait courant + jours restants |
-| POST | `/api/subscriptions/choose` | Choisir un forfait (mock, en attendant Genius Pay) |
+| POST | `/api/auth/register` · `/login` · `/google` | Inscription / connexion |
+| POST | `/api/auth/forgot-password` · `/reset-password` | Mot de passe oublié |
+| GET / PUT | `/api/users/me` | Profil / modifier le nom |
+| PUT | `/api/users/me/settings` | Valeur de 1R et risque par défaut |
+| GET / POST | `/api/trades` | Lister / créer un trade |
+| POST | `/api/trades/bulk` | Import de plusieurs trades |
+| GET / PUT / DELETE | `/api/trades/:id` | Lire / modifier / supprimer |
+| GET / POST | `/api/journal-entries` | Lister / créer une entrée (multipart, captures) |
+| GET / PUT / DELETE | `/api/journal-entries/:id` | Lire / modifier / supprimer |
+| GET / POST | `/api/strategies` | Lister / créer |
+| GET | `/api/strategies/active` | Stratégie active |
+| GET / PUT / DELETE | `/api/strategies/:id` | Lire / modifier / supprimer |
+| PUT | `/api/strategies/:id/activate` | Activer (une seule active à la fois) |
+| GET / POST / DELETE | `/api/markets` | Catalogue de référence + mes marchés |
 
-Toutes les réponses suivent le format `{ success: boolean, data?: ..., message?: ... }`.
+Réponses : `{ success: boolean, data?: ..., message?: ... }`.
 
-## Intégration future de Genius Pay
+## Nettoyage d'une base existante (optionnel)
 
-Le modèle `Subscription` et le contrôleur `subscription.controller.js`
-contiennent déjà la structure nécessaire (voir les commentaires dans ces
-fichiers). Il restera à :
-1. Initier un paiement via l'API Genius Pay dans `choosePlan` pour les
-   forfaits payants (au lieu d'activer le forfait immédiatement).
-2. Ajouter un endpoint webhook qui active réellement le forfait à la
-   confirmation du paiement.
+Si votre base contient d'anciennes données de forfaits :
 
-## Sécurité et performance
+```bash
+node scripts/cleanup-payment-data.js            # aperçu (ne modifie rien)
+node scripts/cleanup-payment-data.js --confirm  # supprime les champs de forfait
+                                                # et la collection "subscriptions"
+```
 
-- `helmet` (en-têtes HTTP sécurisés), `cors` (origine restreinte au
-  frontend), `compression` (réponses gzip), `express-rate-limit` (anti
-  bruteforce sur l'authentification).
-- Toutes les routes de données sont filtrées par `user` : impossible pour un
-  compte de lire ou modifier les données d'un autre.
-- `asyncHandler` + middleware d'erreurs centralisé : pas de try/catch
-  répété, réponses d'erreur cohérentes.
+## Sécurité
+
+`helmet`, CORS restreint à `FRONTEND_URL`, `compression`, rate-limit sur
+l'authentification, mots de passe hachés (bcrypt), jetons Google vérifiés
+(signature, audience, e-mail vérifié). Le code de réinitialisation de mot de
+passe n'est jamais renvoyé par l'API en production.

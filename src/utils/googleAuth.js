@@ -31,6 +31,12 @@ async function verifyGoogleCredential(credential) {
   if (!payload || !payload.email) {
     throw new ApiError(401, 'Impossible de lire les informations du compte Google.');
   }
+  // Sécurité : un compte existant est relié à Google par e-mail. On exige donc
+  // que Google ait vérifié cette adresse, sinon quelqu'un pourrait prendre le
+  // contrôle d'un compte avec une adresse non vérifiée.
+  if (payload.email_verified === false) {
+    throw new ApiError(401, "L'adresse e-mail de ce compte Google n'est pas vérifiée.");
+  }
 
   return {
     email: payload.email,

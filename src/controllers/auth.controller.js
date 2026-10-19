@@ -4,25 +4,12 @@
 // AuthContext.jsx côté client, qui persiste { user, token } et attache le
 // token à chaque requête suivante).
 const User = require('../models/User');
-const Subscription = require('../models/Subscription');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
 const { generateToken } = require('../utils/generateToken');
 const { verifyGoogleCredential } = require('../utils/googleAuth');
 const emailService = require('../services/emailService');
-
-// Crée l'entrée Subscription "essai" initiale et renvoie la réponse
-// d'authentification standard (utilisé par register ET googleLogin).
-async function createTrialSubscription(user) {
-  await Subscription.create({
-    user: user._id,
-    planId: 'essai',
-    status: 'active',
-    startedAt: user.planStartedAt,
-    amountUsd: 0,
-    provider: 'none',
-  });
-}
+const env = require('../config/env');
 
 function buildAuthResponse(user) {
   return {
@@ -56,8 +43,6 @@ const register = asyncHandler(async (req, res) => {
     passwordHash: password, // haché automatiquement par le hook pre('save') du modèle
     provider: 'email',
   });
-
-  await createTrialSubscription(user);
 
   // E-mail de bienvenue (no-op si SMTP non configuré, ne bloque pas la réponse).
   emailService.sendWelcomeEmail(user).catch(() => {});
@@ -112,7 +97,6 @@ const googleLogin = asyncHandler(async (req, res) => {
   }
 
   if (isNewUser) {
-    await createTrialSubscription(user);
     // E-mail de bienvenue à la première inscription via Google (no-op sinon).
     emailService.sendWelcomeEmail(user).catch(() => {});
   }
@@ -121,10 +105,14 @@ const googleLogin = asyncHandler(async (req, res) => {
 });
 
 // POST /api/auth/forgot-password  { email }
-// Génère un code à 6 chiffres valable 30 min et l'envoie par e-mail (no-op
-// si SMTP non configuré, auquel cas le code est renvoyé dans la réponse pour
-// rester utilisable). La réponse est volontairement la même que l'e-mail
-// existe ou non, pour ne pas révéler quels comptes existent.
+// Génère un code à 6 chiffres valable 30 min et l'envoie par e-mail. La
+// réponse est volontairement identique que l'e-mail existe ou non, pour ne pas
+// révéler quels comptes existent.
+//
+// SÉCURITÉ : le code n'est JAMAIS renvoyé dans la réponse en production (sinon
+// n'importe qui pourrait réinitialiser le mot de passe de n'importe quel
+// compte). Il n'est exposé qu'en développement, quand le SMTP n'est pas
+// configuré, pour pouvoir tester la fonction localement.
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -132,20 +120,20 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 
   let code = null;
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const user = await User.findOne({ email: String(email).toLowerCase() });
   if (user) {
     code = await user.setResetCode();
     await user.save();
     emailService.sendPasswordResetEmail(user, code).catch(() => {});
   }
 
+  const exposeCodeForDev = !env.isProduction && !emailService.isEmailConfigured();
+
   res.json({
     success: true,
     message:
       'Si un compte existe avec cet e-mail, un code de réinitialisation vient de vous être envoyé.',
-    // En attendant la configuration SMTP, le code est aussi renvoyé ici pour
-    // que la réinitialisation reste utilisable (et testable) immédiatement.
-    data: { code },
+    data: exposeCodeForDev ? { code } : {},
   });
 });
 

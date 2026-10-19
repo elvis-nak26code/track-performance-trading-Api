@@ -5,7 +5,6 @@ const upload = require('../middlewares/upload.middleware');
 
 const express = require('express');
 const { protect } = require('../middlewares/auth.middleware');
-const { requireActivePlan } = require('../middlewares/plan.middleware');
 const {
   getJournalEntries,
   getJournalEntryById,
@@ -19,9 +18,8 @@ const router = express.Router();
 router.use(protect);
 
 router.get('/', getJournalEntries);
-// Créer une entrée de journal exige un forfait actif ; lire/éditer/supprimer
-// les entrées existantes reste possible (les données restent visibles).
-router.post('/', requireActivePlan, upload.array('screenshots', upload.MAX_SCREENSHOTS), createJournalEntry);
+// Le logiciel est entièrement gratuit : aucune restriction par forfait.
+router.post('/', upload.array('screenshots', upload.MAX_SCREENSHOTS), createJournalEntry);
 router.get('/:id', getJournalEntryById);
 router.put('/:id', upload.array('screenshots', upload.MAX_SCREENSHOTS), updateJournalEntry);
 router.delete('/:id', deleteJournalEntry);

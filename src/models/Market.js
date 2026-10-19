@@ -1,8 +1,9 @@
-// Modèle Market : catalogue de référence des marchés (actions, indices,
-// forex, matières premières), partagé entre tous les utilisateurs (ce n'est
-// pas une donnée privée comme les trades). Les entrées de base sont insérées
-// via le script src/scripts/seedMarkets.js ; les utilisateurs peuvent en
-// ajouter manuellement depuis /marches (isCustom: true).
+// Modèle Market : catalogue des marchés (actions, indices, forex, matières
+// premières).
+//  - Marchés de RÉFÉRENCE (isCustom: false, createdBy: null) : partagés entre
+//    tous les utilisateurs, insérés via le seed (src/scripts/seedMarkets.js).
+//  - Marchés PERSONNALISÉS (isCustom: true) : ajoutés par un utilisateur depuis
+//    /marches, visibles UNIQUEMENT par lui (createdBy = son id).
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
@@ -14,7 +15,6 @@ const marketSchema = new Schema(
       required: [true, 'Le symbole est requis.'],
       trim: true,
       uppercase: true,
-      unique: true,
     },
     name: {
       type: String,
@@ -59,5 +59,12 @@ const marketSchema = new Schema(
     },
   }
 );
+
+// Un même symbole ne peut exister qu'une fois par propriétaire : une seule fois
+// dans le catalogue de référence (createdBy: null) et une seule fois par
+// utilisateur pour ses marchés personnalisés. Deux utilisateurs peuvent donc
+// avoir chacun leur propre marché "XYZ" sans se bloquer mutuellement.
+marketSchema.index({ symbol: 1, createdBy: 1 }, { unique: true });
+marketSchema.index({ createdBy: 1 });
 
 module.exports = mongoose.model('Market', marketSchema);

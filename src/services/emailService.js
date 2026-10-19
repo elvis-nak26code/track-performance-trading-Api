@@ -1,5 +1,5 @@
-// Service d'envoi d'e-mails transactionnels (bienvenue, confirmation
-// d'abonnement, rappel d'expiration) via SMTP (nodemailer).
+// Service d'envoi d'e-mails transactionnels (bienvenue, réinitialisation du
+// mot de passe) via SMTP (nodemailer).
 //
 // IMPORTANT : l'application doit continuer à fonctionner même si l'e-mail
 // n'est pas configuré. Tant que SMTP n'est pas renseigné (ou
@@ -63,9 +63,9 @@ function sendWelcomeEmail(user) {
       `Bonjour ${user.name || user.email},`,
       '',
       'Bienvenue sur BlackTracker, votre journal de trading.',
-      'Votre essai gratuit de 7 jours vient d\'être activé : vous pouvez',
-      'enregistrer vos trades, tenir votre journal et consulter vos',
-      'statistiques dès maintenant.',
+      'Le logiciel est entièrement gratuit : vous pouvez enregistrer vos',
+      'trades, tenir votre journal et consulter vos statistiques dès',
+      'maintenant, sans limite de durée.',
       '',
       'Bonne chance et bons trades !',
       '— L\'équipe BlackTracker',
@@ -73,56 +73,9 @@ function sendWelcomeEmail(user) {
   });
 }
 
-/** E-mail de confirmation quand un abonnement (payant, gratuit ou promo) s'active. */
-function sendSubscriptionConfirmationEmail(user, plan, source) {
-  const sourceLabel =
-    source === 'promo'
-      ? 'via un code promo'
-      : source === 'free'
-        ? 'via l\'essai gratuit'
-        : 'après votre paiement';
-  return sendEmail({
-    to: user.email,
-    subject: `Votre forfait « ${plan.label} » est actif ✅`,
-    text: [
-      `Bonjour ${user.name || user.email},`,
-      '',
-      `Votre forfait « ${plan.label} » est maintenant actif ${sourceLabel}.`,
-      plan.durationDays && Number.isFinite(plan.durationDays)
-        ? `Il vous donne accès à toutes les fonctionnalités pendant ${plan.durationDays} jours.`
-        : 'Il vous donne accès à toutes les fonctionnalités sans limite de temps.',
-      '',
-      'Rendez-vous sur votre tableau de bord pour continuer à trader.',
-      '— L\'équipe BlackTracker',
-    ].join('\n'),
-  });
-}
-
-/** Rappel quand l'abonnement approche de son expiration (envoyé par le job). */
-function sendExpiryReminderEmail(user, plan, daysRemaining) {
-  const dayText = daysRemaining === 1 ? 'dernier jour' : `${daysRemaining} jours`;
-  return sendEmail({
-    to: user.email,
-    subject: `Votre forfait expire dans ${dayText} ⏳`,
-    text: [
-      `Bonjour ${user.name || user.email},`,
-      '',
-      `Votre forfait « ${plan.label} » expire dans ${dayText}.`,
-      'Pour ne pas interrompre votre suivi, renouvelez votre abonnement',
-      'dès maintenant depuis la page Tarifs.',
-      '',
-      'Vos données restent enregistrées, mais vous ne pourrez plus ajouter',
-      'de nouvelles entrées une fois le forfait expiré.',
-      '',
-      '— L\'équipe BlackTracker',
-    ].join('\n'),
-  });
-}
-
 /**
  * E-mail de réinitialisation du mot de passe (mot de passe oublié). Le code
- * à 6 chiffres est aussi renvoyé dans la réponse de l'API tant que l'e-mail
- * n'est pas configuré, pour que la fonction reste utilisable (voir
+ * à 6 chiffres n'est jamais renvoyé par l'API en production (voir
  * auth.controller.js).
  */
 function sendPasswordResetEmail(user, code) {
@@ -149,7 +102,5 @@ function sendPasswordResetEmail(user, code) {
 module.exports = {
   isEmailConfigured,
   sendWelcomeEmail,
-  sendSubscriptionConfirmationEmail,
-  sendExpiryReminderEmail,
   sendPasswordResetEmail,
 };

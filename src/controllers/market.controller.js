@@ -1,8 +1,8 @@
-// Contrôleur Markets : catalogue de référence PARTAGÉ entre tous les
-// utilisateurs (contrairement aux trades/journal, ce n'est pas une donnée
-// privée). La lecture est ouverte à tout utilisateur connecté ; l'ajout
-// manuel enregistre qui a créé l'entrée (isCustom + createdBy) à titre
-// d'audit, sans restreindre la visibilité.
+// Contrôleur Markets.
+//  - Le catalogue de RÉFÉRENCE (isCustom: false) est partagé entre tous les
+//    utilisateurs connectés (lecture seule, intouchable).
+//  - Les marchés PERSONNALISÉS (isCustom: true) sont PRIVÉS : chaque utilisateur
+//    ne voit, ne crée et ne supprime que les siens.
 const Market = require('../models/Market');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
@@ -17,9 +17,11 @@ function pickMarketFields(body) {
   return data;
 }
 
-// GET /api/markets
-const getMarkets = asyncHandler(async (_req, res) => {
-  const markets = await Market.find().sort({ category: 1, symbol: 1 });
+// GET /api/markets  → catalogue de référence + MES marchés personnalisés
+const getMarkets = asyncHandler(async (req, res) => {
+  const markets = await Market.find({
+    $or: [{ isCustom: false }, { createdBy: req.user._id }],
+  }).sort({ category: 1, symbol: 1 });
   res.json({ success: true, data: markets });
 });
 
@@ -30,18 +32,25 @@ const createMarket = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Symbole, nom, catégorie et description sont requis.');
   }
 
-  const existing = await Market.findOne({ symbol: data.symbol.toUpperCase() });
+  const symbol = String(data.symbol).trim().toUpperCase();
+
+  // Conflit avec le catalogue de référence OU avec un de MES marchés (les
+  // marchés personnalisés des autres utilisateurs ne comptent pas).
+  const existing = await Market.findOne({
+    symbol,
+    $or: [{ isCustom: false }, { createdBy: req.user._id }],
+  });
   if (existing) {
     throw new ApiError(409, `Un marché avec le symbole "${data.symbol}" existe déjà.`);
   }
 
-  const market = await Market.create({ ...data, isCustom: true, createdBy: req.user._id });
+  const market = await Market.create({ ...data, symbol, isCustom: true, createdBy: req.user._id });
   res.status(201).json({ success: true, data: market });
 });
 
-// DELETE /api/markets/:id   (suppression depuis /marches ou le tableau de bord)
-// Un utilisateur ne peut supprimer que les marchés qu'il a lui-même créés ;
-// le catalogue de référence (non custom) est partagé et intouchable.
+// DELETE /api/markets/:id
+// Un utilisateur ne peut supprimer que SES marchés personnalisés ; le
+// catalogue de référence est partagé et intouchable.
 const deleteMarket = asyncHandler(async (req, res) => {
   const market = await Market.findById(req.params.id);
   if (!market) {
@@ -50,8 +59,10 @@ const deleteMarket = asyncHandler(async (req, res) => {
   if (!market.isCustom) {
     throw new ApiError(403, 'Ce marché de référence ne peut pas être supprimé.');
   }
-  if (market.createdBy && market.createdBy.toString() !== req.user._id.toString()) {
-    throw new ApiError(403, "Vous ne pouvez pas supprimer un marché créé par un autre compte.");
+  // Un marché personnalisé d'un autre compte est traité comme inexistant
+  // (on ne révèle même pas son existence).
+  if (!market.createdBy || market.createdBy.toString() !== req.user._id.toString()) {
+    throw new ApiError(404, 'Marché introuvable.');
   }
   await Market.findByIdAndDelete(market._id);
   res.json({ success: true, data: market });

@@ -29,25 +29,6 @@ const env = {
   authRateLimitMax: Number(process.env.AUTH_RATE_LIMIT_MAX) || 20,
   authRateLimitWindowMinutes: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MINUTES) || 15,
 
-  // Intégration Genius Pay (mode sandbox par défaut tant que la base URL de
-  // production n'est pas fournie). Voir scripts/create-geniuspay-webhook.js.
-  geniusPay: {
-    apiKey: process.env.GENIUS_PAY_API_KEY || '',
-    apiSecret: process.env.GENIUS_PAY_API_SECRET || '',
-    baseUrl: process.env.GENIUS_PAY_BASE_URL || 'https://geniuspay.ci/api/v1/merchant',
-    webhookSecret: process.env.GENIUS_PAY_WEBHOOK_SECRET || '',
-    currency: process.env.GENIUS_PAY_CURRENCY || 'XOF',
-  },
-
-  // Codes promo. Défauts fournis pour que la fonctionnalité marche sans
-  // configuration ; l'exploitant peut en définir d'autres dans .env.
-  //  - codeMonths : 1 mois gratuit, utilisable une seule fois par utilisateur.
-  //  - codeLifetime : accès à vie à la plateforme, gratuit.
-  promo: {
-    codeMonths: (process.env.PROMO_CODE_MONTH || 'BTMOIS2026').trim(),
-    codeLifetime: (process.env.PROMO_CODE_LIFETIME || 'BTLIFE2026').trim(),
-  },
-
   // E-mails transactionnels (SMTP). L'application fonctionne sans : tant que
   // EMAIL_ENABLED !== 'true' ou que le serveur est incomplet, les envois sont
   // des no-ops journalisés.

@@ -6,7 +6,7 @@ class ApiError extends Error {
   constructor(statusCode, message, code) {
     super(message);
     this.statusCode = statusCode;
-    this.code = code || null; // code métier optionnel (ex: 'PLAN_EXPIRED')
+    this.code = code || null; // code métier optionnel (ex: 'VALIDATION_ERROR')
     this.isOperational = true; // erreur "attendue", pas un bug interne
     Error.captureStackTrace(this, this.constructor);
   }

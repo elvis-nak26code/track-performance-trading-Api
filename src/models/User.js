@@ -1,7 +1,9 @@
 // Modèle Utilisateur : gère à la fois les comptes email/mot de passe et les
 // comptes connectés via Google. Contient aussi les préférences de calcul
-// (facteur R, risque par défaut) et l'état d'abonnement (forfait en cours),
-// afin que le profil frontend (/profil) puisse tout lire en un seul appel.
+// (facteur R, risque par défaut), afin que le profil frontend (/profil)
+// puisse tout lire en un seul appel. Le logiciel est entièrement gratuit :
+// aucun forfait ni état d'abonnement n'est stocké.
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -54,37 +56,6 @@ const userSchema = new Schema(
       defaultRiskPercent: { type: Number, default: SETTINGS_DEFAULTS.defaultRiskPercent, min: 0 },
     },
 
-    // État d'abonnement courant. Le forfait peut être : essai gratuit (7 j),
-    // mensuel (30 j), annuel (365 j) ou "lifetime" (accès à vie accordé via
-    // le code promo). La durée de chaque forfait est définie dans
-    // plan.middleware.js (backend) et constants/plans.js (frontend).
-    plan: {
-      type: String,
-      enum: ['essai', 'mensuel', 'annuel', 'lifetime'],
-      default: 'essai',
-    },
-    planStartedAt: {
-      type: Date,
-      default: Date.now,
-    },
-    // Codes promo déjà utilisés par cet utilisateur (impose "une seule fois
-    // par compte" pour le code qui offre un mois gratuit).
-    promoCodesRedeemed: {
-      type: [
-        {
-          code: { type: String },
-          redeemedAt: { type: Date, default: Date.now },
-        },
-      ],
-      default: [],
-    },
-    // Date du dernier e-mail de rappel d'expiration envoyé (null tant que le
-    // rappel n'a pas été envoyé). Réinitialisé à chaque activation de forfait.
-    expiryReminderSentAt: {
-      type: Date,
-      default: null,
-    },
-
     // Réinitialisation du mot de passe : code à 6 chiffres haché (bcrypt) +
     // date d'expiration (30 min). Le code est effacé après utilisation.
     resetPasswordCode: {
@@ -132,7 +103,7 @@ userSchema.methods.comparePassword = function comparePassword(plainPassword) {
 // Génère et stocke un code de réinitialisation de mot de passe (haché),
 // valable 30 minutes. Renvoie le code en clair pour l'envoyer par e-mail.
 userSchema.methods.setResetCode = async function setResetCode() {
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const code = crypto.randomInt(100000, 1000000).toString();
   const salt = await bcrypt.genSalt(10);
   this.resetPasswordCode = await bcrypt.hash(code, salt);
   this.resetPasswordExpires = new Date(Date.now() + 30 * 60 * 1000);

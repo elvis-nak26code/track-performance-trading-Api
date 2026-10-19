@@ -124,6 +124,18 @@ function uploadImageToCloudinary(file, userId) {
   });
 }
 
+// Supprime une image Cloudinary sans jamais faire échouer la requête : à ce
+// stade la base de données est déjà à jour, une panne Cloudinary ne doit donc
+// pas renvoyer une erreur au client (qui réessaierait et obtiendrait un 404).
+async function destroyImageQuietly(screenshot) {
+  if (!screenshot || !screenshot.public_id) return;
+  try {
+    await cloudinary.uploader.destroy(screenshot.public_id, { resource_type: 'image' });
+  } catch (error) {
+    console.error('[cloudinary] Suppression impossible :', screenshot.public_id, error.message);
+  }
+}
+
 // GET /api/journal-entries
 const getJournalEntries = asyncHandler(async (req, res) => {
   const entries = await JournalEntry.find({
@@ -261,85 +273,104 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
   // Captures d'écran
   // --------------------------------------------------
 
-  const metadata = parseJsonField(
-    req.body.screenshotMetadata,
-    []
-  );
+  // Les captures ne sont touchées QUE si le client les mentionne (métadonnées
+  // ou nouveaux fichiers). Sans cela (ex : simple modification du texte ou de
+  // l'humeur), les captures existantes sont conservées telles quelles — avant
+  // ce correctif, elles étaient toutes supprimées de Cloudinary et de la base.
+  const metadataProvided = req.body.screenshotMetadata !== undefined;
+  const hasNewFiles = (req.files || []).length > 0;
 
-  const existingScreenshots = entry.screenshots || [];
+  let screenshotsToDelete = [];
 
-  // IDs des anciennes captures que le frontend souhaite conserver.
-  const keptIds = metadata
-    .filter((item) => !item.isNew)
-    .map((item) => item.id)
-    .filter(Boolean);
+  if (metadataProvided || hasNewFiles) {
+    const metadata = parseJsonField(
+      req.body.screenshotMetadata,
+      []
+    );
 
-  // Anciennes captures supprimées par l'utilisateur.
-  const screenshotsToDelete = existingScreenshots.filter(
-    (screenshot) => !keptIds.includes(screenshot.id)
-  );
+    const existingScreenshots = entry.screenshots || [];
 
-  // --------------------------------------------------
-  // Conservation des anciennes captures
-  // --------------------------------------------------
+    // IDs des anciennes captures que le frontend souhaite conserver.
+    const keptIds = metadata
+      .filter((item) => !item.isNew)
+      .map((item) => item.id)
+      .filter(Boolean);
 
-  const screenshots = existingScreenshots
-    .filter((screenshot) => keptIds.includes(screenshot.id))
-    .map((screenshot) => {
-      const item = metadata.find(
-        (meta) => meta.id === screenshot.id
+    // Anciennes captures supprimées par l'utilisateur.
+    screenshotsToDelete = existingScreenshots.filter(
+      (screenshot) => !keptIds.includes(screenshot.id)
+    );
+
+    // Conservation des anciennes captures
+    const screenshots = existingScreenshots
+      .filter((screenshot) => keptIds.includes(screenshot.id))
+      .map((screenshot) => {
+        const item = metadata.find(
+          (meta) => meta.id === screenshot.id
+        );
+
+        return {
+          id: screenshot.id,
+          public_id: screenshot.public_id,
+          url: screenshot.url,
+          name: item?.name || screenshot.name || '',
+          caption: item?.caption || '',
+        };
+      });
+
+    // Upload des nouvelles captures
+    const newMetadata = metadata.filter(
+      (item) => item.isNew
+    );
+
+    for (let i = 0; i < (req.files || []).length; i++) {
+      const file = req.files[i];
+      const item = newMetadata[i] || {};
+
+      const uploaded = await uploadImageToCloudinary(
+        file,
+        req.user._id.toString()
       );
 
-      return {
-        id: screenshot.id,
-        public_id: screenshot.public_id,
-        url: screenshot.url,
-        name: item?.name || screenshot.name || '',
-        caption: item?.caption || '',
-      };
-    });
+      screenshots.push({
+        id: item.id || crypto.randomUUID(),
+        public_id: uploaded.public_id,
+        url: uploaded.url,
+        name: item.name || file.originalname,
+        caption: item.caption || '',
+      });
+    }
 
-  // --------------------------------------------------
-  // Upload des nouvelles captures
-  // --------------------------------------------------
+    // Maximum de captures par entrée.
+    if (screenshots.length > MAX_SCREENSHOTS) {
+      throw new ApiError(
+        400,
+        `Une entrée ne peut pas contenir plus de ${MAX_SCREENSHOTS} captures.`
+      );
+    }
 
-  const newMetadata = metadata.filter(
-    (item) => item.isNew
-  );
+    update.screenshots = screenshots;
 
-  for (let i = 0; i < (req.files || []).length; i++) {
-    const file = req.files[i];
-    const item = newMetadata[i] || {};
-
-    const uploaded = await uploadImageToCloudinary(
-      file,
-      req.user._id.toString()
-    );
-
-    screenshots.push({
-      id: item.id || crypto.randomUUID(),
-      public_id: uploaded.public_id,
-      url: uploaded.url,
-      name: item.name || file.originalname,
-      caption: item.caption || '',
-    });
-  }
-
-  // Maximum de captures par entrée.
-  if (screenshots.length > MAX_SCREENSHOTS) {
-    throw new ApiError(
-      400,
-      `Une entrée ne peut pas contenir plus de ${MAX_SCREENSHOTS} captures.`
-    );
-  }
-
-  update.screenshots = screenshots;
-
-  // Blocs ordonnés (texte / image) : validés après construction des captures.
-  if (req.body.blocks !== undefined) {
+    // Blocs ordonnés (texte / image) : validés après construction des captures.
+    if (req.body.blocks !== undefined) {
+      update.blocks = buildBlocks(
+        req.body.blocks,
+        screenshots.map((s) => s.id)
+      );
+    } else if (screenshotsToDelete.length > 0) {
+      // Le client n'a pas renvoyé les blocs : on retire seulement ceux qui
+      // pointaient vers une capture supprimée (évite des images "fantômes").
+      const remainingIds = new Set(screenshots.map((s) => s.id));
+      update.blocks = (entry.blocks || [])
+        .filter((b) => b.type !== 'image' || remainingIds.has(b.screenshotId))
+        .map((b) => (typeof b.toObject === 'function' ? b.toObject() : b));
+    }
+  } else if (req.body.blocks !== undefined) {
+    // Blocs modifiés sans toucher aux captures : on valide contre les captures
+    // actuelles de l'entrée.
     update.blocks = buildBlocks(
       req.body.blocks,
-      screenshots.map((s) => s.id)
+      (entry.screenshots || []).map((s) => s.id)
     );
   }
 
@@ -359,16 +390,13 @@ const updateJournalEntry = asyncHandler(async (req, res) => {
     }
   );
 
+  if (!updatedEntry) {
+    throw new ApiError(404, 'Entrée de journal introuvable.');
+  }
+
   // Suppression des anciennes images sur Cloudinary APRÈS mise à jour DB réussie.
   for (const screenshot of screenshotsToDelete) {
-    if (screenshot.public_id) {
-      await cloudinary.uploader.destroy(
-        screenshot.public_id,
-        {
-          resource_type: 'image',
-        }
-      );
-    }
+    await destroyImageQuietly(screenshot);
   }
 
   res.json({
@@ -388,16 +416,10 @@ const deleteJournalEntry = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Entrée de journal introuvable.');
   }
 
-  // Supprime également les images de Cloudinary.
+  // Supprime également les images de Cloudinary (sans jamais faire échouer la
+  // requête : l'entrée est déjà supprimée en base).
   for (const screenshot of entry.screenshots || []) {
-    if (screenshot.public_id) {
-      await cloudinary.uploader.destroy(
-        screenshot.public_id,
-        {
-          resource_type: 'image',
-        }
-      );
-    }
+    await destroyImageQuietly(screenshot);
   }
 
   res.json({

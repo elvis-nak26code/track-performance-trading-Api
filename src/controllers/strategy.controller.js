@@ -73,19 +73,30 @@ const getStrategyById = asyncHandler(async (req, res) => {
 
 // POST /api/strategies
 const createStrategy = asyncHandler(async (req, res) => {
+  const data = pickStrategyFields(req.body);
+  const wantsActive = data.isActive === true;
+  // L'activation passe toujours par la logique "une seule stratégie active".
+  data.isActive = false;
+
   const strategy = await Strategy.create({
-    ...pickStrategyFields(req.body),
+    ...data,
     user: req.user._id,
   });
 
-  // Première stratégie de l'utilisateur : on l'active directement pour que la
-  // checklist pré-trade du tableau de bord soit tout de suite disponible.
-  if (req.body.isActive === undefined) {
-    const count = await Strategy.countDocuments({ user: req.user._id });
-    if (count === 1) {
-      strategy.isActive = true;
-      await strategy.save();
-    }
+  // Première stratégie de l'utilisateur, ou activation demandée : on l'active
+  // et on désactive les autres, pour qu'une seule stratégie soit active à la
+  // fois (la checklist pré-trade du tableau de bord est celle de la stratégie
+  // active).
+  const count = await Strategy.countDocuments({ user: req.user._id });
+  const shouldActivate = wantsActive || (req.body.isActive === undefined && count === 1);
+
+  if (shouldActivate) {
+    await Strategy.updateMany(
+      { user: req.user._id, isActive: true, _id: { $ne: strategy._id } },
+      { $set: { isActive: false } }
+    );
+    strategy.isActive = true;
+    await strategy.save();
   }
 
   res.status(201).json({
